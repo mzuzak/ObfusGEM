@@ -1,0 +1,9 @@
+#!/bin/sh
+# File to run the barnes benchmark
+cd /splash2/codes/apps/barnes
+/sbin/m5 resetstats
+/sbin/m5 checkpoint
+./BARNES < input
+/sbin/m5 dumpresetstats
+echo "Done :D"
+/sbin/m5 exit

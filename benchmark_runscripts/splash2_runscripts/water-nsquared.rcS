@@ -1,0 +1,9 @@
+#!/bin/sh
+# File to run the water-nsquared benchmark
+cd /splash2/codes/apps/water-nsquared
+/sbin/m5 resetstats
+/sbin/m5 checkpoint
+./WATER-NSQUARED < input
+/sbin/m5 dumpresetstats
+echo "Done :D"
+/sbin/m5 exit

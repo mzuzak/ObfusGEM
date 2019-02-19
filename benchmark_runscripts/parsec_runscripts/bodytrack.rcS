@@ -1,0 +1,13 @@
+#!/bin/sh
+
+# File to run the bodytrack benchmark
+
+cd /parsec/install/bin
+/sbin/m5 resetstats
+/sbin/m5 checkpoint
+./bodytrack /parsec/install/inputs/bodytrack/sequenceB_1 4 1 1000 5 0 1
+/sbin/m5 dumpresetstats
+echo "Done :D"
+#cat /parsec/install/inputs/blackscholes/prices.txt
+/sbin/m5 exit
+
