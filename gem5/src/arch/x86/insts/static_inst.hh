@@ -43,6 +43,7 @@
 #include "base/trace.hh"
 #include "cpu/static_inst.hh"
 #include "debug/X86.hh"
+#include "obfusgem/obfusgem.hh"
 
 namespace X86ISA
 {
@@ -181,6 +182,32 @@ namespace X86ISA
         {
             pcState.advance();
         }
+
+
+      inline uint64_t obgem_error_inject(uint64_t result, uint64_t is_mult) const
+        {
+            X86IntReg reg = result;
+
+            if(is_mult == 1)
+              {
+                if(mult_lock == 1)
+                  {
+                    if(mult_err_rate > (rand() % err_rate_denom))
+                      reg = reg ^ mult_err_severity;
+                  }
+              }
+            else
+              {
+                if(adder_lock == 1)
+                  {
+                    if(adder_err_rate > (rand() % err_rate_denom))
+                      reg = reg ^ adder_err_severity;
+                  }
+              }
+            
+            return reg;
+        }
+      
     };
 }
 

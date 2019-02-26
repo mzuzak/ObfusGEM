@@ -20,6 +20,9 @@ for bm in "${benchmarks[@]}"; do
 
     #Remove Checkpoints
     rm -rf ./m5out/cpt.*
+
+    # Generate clean ObfusGEM header
+    ./../helper_scripts/gen_clean_header.sh > ./src/obfusgem/obfusgem.hh
     
     # Rebuild
     rm ./build/X86/gem5.opt
@@ -36,6 +39,9 @@ for bm in "${benchmarks[@]}"; do
     # Checkpoint Creation Run
     ./build/X86/gem5.opt ./configs/example/fs.py --script=../benchmark_runscripts/$bm.rcS --caches --cpu-type=TimingSimpleCPU
 
+    # Update ObfusGEM Configuration File
+    ./../helper_scripts/gen_obfusgem_header.sh > ./src/obfusgem/obfusgem.hh
+    
     # Rebuild Obfuscated Copy
     rm ./build/X86/gem5.opt
     rm ./build/X86/gem5.obfus
@@ -46,14 +52,14 @@ for bm in "${benchmarks[@]}"; do
     cp ./build/X86/gem5.opt ./build/X86/gem5.obfus
 
     # Copy off checkpoints
-    cp -r ./m5out/cpt.* ./tracediff-1/*
-    cp -r ./m5out/cpt.* ./tracediff-2/*
+    cp -r ./m5out/cpt.* ./tracediff-1/
+    cp -r ./m5out/cpt.* ./tracediff-2/
     
     # Monte Carlo Run Count
     while [[ $cur_run -le $monte_carlo_runs ]]; do
 
         # Start stochastic fault injection run. Monitor both simulations and terminate on persistent difference.
-        ./util/tracediff './build/X86/gem5.gold|./build/X86/gem5.obfus' --debug-flags=Exec,-ExecTicks ./configs/example/fs.py -r 1 --script=../benchmark_runscripts/$bm.rcS --caches --cpu-type=TimingSimpleCPU> "$log" 2>&1 &
+        ./util/tracediff './build/X86/gem5.gold|./build/X86/gem5.obfus' --debug-flags=Exec,-ExecTicks ./configs/example/fs.py -r 1 --script=../benchmark_runscripts/$bm.rcS --caches --cpu-type=TimingSimpleCPU > "$log" 2>&1 &
         pid=$!
 
         # Checker loop -- Kill simulation process when traces diverge or benchmark completes
@@ -80,8 +86,8 @@ for bm in "${benchmarks[@]}"; do
         mv ./tracediff-2/system.* ./../obgem_out/$bm/$runstring/
 
         # Remove files not archived
-        rm -rf ./tracediff-1/	
-        rm -rf ./tracediff-2/
+        rm -rf ./tracediff-1/*
+        rm -rf ./tracediff-2/*
 
 	# Copy in monte-carlo parser to update global data
         cp ./../helper_scripts/parse_tracediff.py ./../obgem_out/$bm/$runstring/
