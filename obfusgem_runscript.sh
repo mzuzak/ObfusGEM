@@ -77,8 +77,7 @@ for bm in "${benchmarks[@]}"; do
 
         # Archive Simulation Results
         runstring="sim.$(date +%F_%R)"
-        mkdir ./../obgem_out/$bm
-        mkdir ./../obgem_out/$bm/$runstring
+        mkdir -p ./../obgem_out/$bm/$runstring
         mv ./$log ./../obgem_out/$bm/$runstring/
         mv ./tracediff-*.out ./../obgem_out/$bm/$runstring/
 	mv ./tracediff-2/stats.txt ./../obgem_out/$bm/$runstring/
