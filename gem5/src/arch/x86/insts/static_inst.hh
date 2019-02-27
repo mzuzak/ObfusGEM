@@ -43,7 +43,8 @@
 #include "base/trace.hh"
 #include "cpu/static_inst.hh"
 #include "debug/X86.hh"
-#include "obfusgem/obfusgem.hh"
+
+#include "obfusgem/alu_obgem.hh"
 
 namespace X86ISA
 {
@@ -192,7 +193,7 @@ namespace X86ISA
               {
                 if(mult_lock == 1)
                   {
-                    if(mult_err_rate > (rand() % err_rate_denom))
+                    if(mult_err_rate > (rand() % alu_err_rate_denom))
                       reg = reg ^ mult_err_severity;
                   }
               }
@@ -200,7 +201,7 @@ namespace X86ISA
               {
                 if(adder_lock == 1)
                   {
-                    if(adder_err_rate > (rand() % err_rate_denom))
+                    if(adder_err_rate > (rand() % alu_err_rate_denom))
                       reg = reg ^ adder_err_severity;
                   }
               }

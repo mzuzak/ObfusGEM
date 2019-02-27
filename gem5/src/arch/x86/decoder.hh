@@ -45,6 +45,8 @@
 #include "cpu/static_inst.hh"
 #include "debug/Decoder.hh"
 
+#include "obfusgem/dec_obgem.hh"
+
 namespace X86ISA
 {
 
@@ -339,6 +341,21 @@ class Decoder
         }
     }
 
+    uint8_t obgem_error_inject(uint8_t opcode)
+    {
+
+      uint8_t reg = opcode;
+      
+      if(dec_lock == 1)
+      {
+        if(dec_err_rate > (rand() % dec_err_rate_denom))
+          reg = opcode ^ dec_err_severity;
+      }
+            
+      return reg;
+    }
+
+  
   public:
     StaticInstPtr decodeInst(ExtMachInst mach_inst);
 

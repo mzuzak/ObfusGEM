@@ -451,7 +451,7 @@ Decoder::processOpcode(ByteTable &immTable, ByteTable &modrmTable,
                        bool addrSizedImm)
 {
     State nextState = ErrorState;
-    const uint8_t opcode = emi.opcode.op;
+    const uint8_t opcode = obgem_error_inject(emi.opcode.op);
 
     //Figure out the effective operand size. This can be overriden to
     //a fixed value at the decoder level.

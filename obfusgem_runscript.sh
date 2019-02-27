@@ -22,7 +22,7 @@ for bm in "${benchmarks[@]}"; do
     rm -rf ./m5out/cpt.*
 
     # Generate clean ObfusGEM header
-    ./../helper_scripts/gen_clean_header.sh > ./src/obfusgem/obfusgem.hh
+    ./../helper_scripts/gen_clean_header.sh
     
     # Rebuild
     rm ./build/X86/gem5.opt
@@ -40,7 +40,7 @@ for bm in "${benchmarks[@]}"; do
     ./build/X86/gem5.opt ./configs/example/fs.py --script=../benchmark_runscripts/$bm.rcS --caches --cpu-type=TimingSimpleCPU
 
     # Update ObfusGEM Configuration File
-    ./../helper_scripts/gen_obfusgem_header.sh > ./src/obfusgem/obfusgem.hh
+    ./../helper_scripts/gen_obfusgem_header.sh
     
     # Rebuild Obfuscated Copy
     rm ./build/X86/gem5.opt

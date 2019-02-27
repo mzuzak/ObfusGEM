@@ -60,6 +60,8 @@
 #include "sim/probe/pmu.hh"
 #include "sim/sim_object.hh"
 
+#include "obfusgem/bp_obgem.hh"
+
 /**
  * Basically a wrapper class to hold both the branch predictor
  * and the BTB.
@@ -94,6 +96,11 @@ class BPredUnit : public SimObject
     bool predict(const StaticInstPtr &inst, const InstSeqNum &seqNum,
                  TheISA::PCState &pc, ThreadID tid);
 
+    /**
+     * ObfusGEM error injector for branch predictor
+     */
+    bool obgem_error_inject(bool pred_taken);
+  
     // @todo: Rename this function.
     virtual void uncondBranch(ThreadID tid, Addr pc, void * &bp_history) = 0;
 

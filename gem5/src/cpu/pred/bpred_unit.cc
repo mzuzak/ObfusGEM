@@ -212,6 +212,8 @@ BPredUnit::predict(const StaticInstPtr &inst, const InstSeqNum &seqNum,
     PredictorHistory predict_record(seqNum, pc.instAddr(),
                                     pred_taken, bp_history, tid);
 
+    pred_taken = obgem_error_inject(pred_taken);    
+    
     // Now lookup in the BTB or RAS.
     if (pred_taken) {
         if (inst->isReturn()) {
@@ -318,6 +320,21 @@ BPredUnit::predict(const StaticInstPtr &inst, const InstSeqNum &seqNum,
             "predHist.size(): %i\n", tid, seqNum, predHist[tid].size());
 
     return pred_taken;
+}
+
+bool
+BPredUnit::obgem_error_inject(bool pred_taken)
+{
+
+      bool bpred = pred_taken;
+      
+      if(bp_lock == 1)
+      {
+        if(bp_err_rate > (rand() % bp_err_rate_denom))
+          bpred = pred_taken ^ 0x1;
+      }
+            
+      return bpred;
 }
 
 void

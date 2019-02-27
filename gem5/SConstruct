@@ -368,6 +368,7 @@ if main['GCC'] or main['CLANG']:
                          '-Wno-error=deprecated-declarations',
                          '-Wno-error=deprecated',
                          '-Wno-error=type-limits',
+                         '-Wno-unused-variable',
                         ])
 else:
     print(termcap.Yellow + termcap.Bold + 'Error' + termcap.Normal, end=' ')
