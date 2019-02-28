@@ -20,6 +20,10 @@ echo "// ObfusGEM Seed" >> ./src/obfusgem/alu_obgem.hh
 echo "static uint64_t alu_obfusgem_seed = $obfusgem_seed;" >> ./src/obfusgem/alu_obgem.hh
 echo "" >> ./src/obfusgem/alu_obgem.hh
 
+echo "// ObfusGEM Injection Mode" >> ./src/obfusgem/alu_obgem.hh
+echo "static uint64_t alu_obfuscation_mode = $random_obfuscation_mode;" >> ./src/obfusgem/alu_obgem.hh
+echo "" >> ./src/obfusgem/alu_obgem.hh
+
 echo "// Error Rate Denominator" >> ./src/obfusgem/alu_obgem.hh
 echo "static uint64_t alu_err_rate_denom = $err_rate_denom;" >> ./src/obfusgem/alu_obgem.hh
 echo "" >> ./src/obfusgem/alu_obgem.hh
@@ -28,12 +32,20 @@ echo "// Adder Locking Configuration" >> ./src/obfusgem/alu_obgem.hh
 echo "static uint64_t adder_lock = $adder_lock;" >> ./src/obfusgem/alu_obgem.hh
 echo "static uint64_t adder_err_rate = $adder_err_rate;" >> ./src/obfusgem/alu_obgem.hh
 echo "static uint64_t adder_err_severity = $adder_err_severity;" >> ./src/obfusgem/alu_obgem.hh
+echo "static uint64_t adder_locked_op1 = $adder_locked_op1;" >> ./src/obfusgem/alu_obgem.hh
+echo "static uint64_t adder_locked_op2 = $adder_locked_op2;" >> ./src/obfusgem/alu_obgem.hh
+echo "static uint64_t adder_locked_flags = $adder_locked_flags;" >> ./src/obfusgem/alu_obgem.hh
+echo "static uint64_t adder_locked_out = $adder_locked_out;" >> ./src/obfusgem/alu_obgem.hh
 echo "" >> ./src/obfusgem/alu_obgem.hh
 
 echo "// Multiplier Locking Configuration" >> ./src/obfusgem/alu_obgem.hh
 echo "static uint64_t mult_lock = $mult_lock;" >> ./src/obfusgem/alu_obgem.hh
 echo "static uint64_t mult_err_rate = $mult_err_rate;" >> ./src/obfusgem/alu_obgem.hh
 echo "static uint64_t mult_err_severity = $mult_err_severity;" >> ./src/obfusgem/alu_obgem.hh
+echo "static uint64_t mult_locked_op1 = $mult_locked_op1;" >> ./src/obfusgem/alu_obgem.hh
+echo "static uint64_t mult_locked_op2 = $mult_locked_op2;" >> ./src/obfusgem/alu_obgem.hh
+echo "static uint64_t mult_locked_flags = $mult_locked_flags;" >> ./src/obfusgem/alu_obgem.hh
+echo "static uint64_t mult_locked_out = $mult_locked_out;" >> ./src/obfusgem/alu_obgem.hh
 echo "" >> ./src/obfusgem/alu_obgem.hh
 
 

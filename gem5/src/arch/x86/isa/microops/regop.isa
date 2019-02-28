@@ -504,8 +504,8 @@ let {{
                     src1, src2, flags, dataSize)
 
     class Add(FlagRegOp):
-        code = 'DestReg = merge(DestReg, result = obgem_error_inject(psrc1 + op2, 0), dataSize);'
-        big_code = 'DestReg = result = obgem_error_inject(psrc1 + op2, 0) & mask(dataSize * 8);'
+        code = 'DestReg = merge(DestReg, result = obgem_error_inject(psrc1 + op2, psrc1, op2, 0, 0), dataSize);'
+        big_code = 'DestReg = result = obgem_error_inject(psrc1 + op2, psrc1, op2, 0, 0) & mask(dataSize * 8);'
 
     class Or(LogicRegOp):
         code = 'DestReg = merge(DestReg, result = (psrc1 | op2), dataSize);'
@@ -514,21 +514,21 @@ let {{
     class Adc(FlagRegOp):
         code = '''
             CCFlagBits flags = cfofBits;
-            DestReg = merge(DestReg, result = (psrc1 + op2 + flags.cf), dataSize);
+            DestReg = merge(DestReg, result = obgem_error_inject(psrc1 + op2 + flags.cf, psrc1, op2, flags.cf, 0), dataSize);
             '''
         big_code = '''
             CCFlagBits flags = cfofBits;
-            DestReg = result = (psrc1 + op2 + flags.cf) & mask(dataSize * 8);
+            DestReg = result = obgem_error_inject(psrc1 + op2 + flags.cf, psrc1, op2, flags.cf, 0) & mask(dataSize * 8);
             '''
 
     class Sbb(SubRegOp):
         code = '''
             CCFlagBits flags = cfofBits;
-            DestReg = merge(DestReg, result = obgem_error_inject(psrc1 - op2 - flags.cf, 0), dataSize);
+            DestReg = merge(DestReg, result = obgem_error_inject(psrc1 - op2 - flags.cf, psrc1, op2, flags.cf, 0), dataSize);
             '''
         big_code = '''
             CCFlagBits flags = cfofBits;
-            DestReg = result = obgem_error_inject(psrc1 - op2 - flags.cf, 0) & mask(dataSize * 8);
+            DestReg = result = obgem_error_inject(psrc1 - op2 - flags.cf, psrc1, op2, flags.cf, 0) & mask(dataSize * 8);
             '''
 
     class And(LogicRegOp):
@@ -536,8 +536,8 @@ let {{
         big_code = 'DestReg = result = (psrc1 & op2) & mask(dataSize * 8)'
 
     class Sub(SubRegOp):
-        code = 'DestReg = merge(DestReg, result = obgem_error_inject(psrc1 - op2, 0), dataSize)'
-        big_code = 'DestReg = result = obgem_error_inject(psrc1 - op2, 0) & mask(dataSize * 8)'
+        code = 'DestReg = merge(DestReg, result = obgem_error_inject(psrc1 - op2, psrc1, op2, 0, 0), dataSize)'
+        big_code = 'DestReg = result = obgem_error_inject(psrc1 - op2, psrc1, op2, 0, 0) & mask(dataSize * 8)'
 
     class Xor(LogicRegOp):
         code = 'DestReg = merge(DestReg, result = (psrc1 ^ op2), dataSize)'
@@ -552,7 +552,7 @@ let {{
         # = (A << p + a) * (B << p + b)
         # = (A * B) << 2p + (A * b + a * B) << p + a * b
         code = '''
-            ProdLow = obgem_error_inject(psrc1 * op2, 1);
+            ProdLow = obgem_error_inject(psrc1 * op2, psrc1, op2, 0, 1);
 
             int p = (dataSize * 8) / 2;
             uint64_t A = bits(psrc1, 2 * p - 1, p);
@@ -602,7 +602,7 @@ let {{
         # = (A << p + a) * (B << p + b)
         # = (A * B) << 2p + (A * b + a * B) << p + a * b
         code = '''
-            ProdLow = obgem_error_inject(psrc1 * op2, 1);
+            ProdLow = obgem_error_inject(psrc1 * op2, psrc1, op2, 0, 1);
 
             int p = (dataSize * 8) / 2;
             uint64_t A = bits(psrc1, 2 * p - 1, p);

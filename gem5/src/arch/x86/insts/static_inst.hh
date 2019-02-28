@@ -185,7 +185,7 @@ namespace X86ISA
         }
 
 
-      inline uint64_t obgem_error_inject(uint64_t result, uint64_t is_mult) const
+      inline uint64_t obgem_error_inject(uint64_t result, uint64_t op1, uint64_t op2, uint64_t flags, uint64_t is_mult) const
         {
             X86IntReg reg = result;
 
@@ -193,16 +193,32 @@ namespace X86ISA
               {
                 if(mult_lock == 1)
                   {
-                    if(mult_err_rate > (rand() % alu_err_rate_denom))
-                      reg = reg ^ mult_err_severity;
+                    if(alu_obfuscation_mode)
+                      {
+                        if(mult_err_rate > (rand() % alu_err_rate_denom))
+                          reg = reg ^ mult_err_severity;
+                      }
+                    else
+                      {
+                        if(op1 == mult_locked_op1 && op2 == mult_locked_op2 && flags == mult_locked_flags)
+                          reg = mult_locked_out;
+                      }
                   }
               }
             else
               {
                 if(adder_lock == 1)
                   {
-                    if(adder_err_rate > (rand() % alu_err_rate_denom))
-                      reg = reg ^ adder_err_severity;
+                    if(alu_obfuscation_mode)
+                      {
+                        if(adder_err_rate > (rand() % alu_err_rate_denom))
+                          reg = reg ^ adder_err_severity;
+                      }
+                    else
+                      {
+                        if(op1 == adder_locked_op1 && op2 == adder_locked_op2 && flags == adder_locked_flags)
+                          reg = adder_locked_out;
+                      }
                   }
               }
             
