@@ -65,6 +65,8 @@
 #include "mem/cache/prefetch/base.hh"
 #include "sim/sim_exit.hh"
 
+#include "obfusgem/cache_obgem.hh"
+
 Cache::Cache(const CacheParams *p)
     : BaseCache(p, p->system->cacheLineSize()),
       tags(p->tags),
@@ -175,6 +177,28 @@ Cache::satisfyRequest(PacketPtr pkt, CacheBlk *blk,
         assert(blk->isWritable());
         // Write or WriteLine at the first cache with block in writable state
         if (blk->checkWrite(pkt)) {
+
+          int blkSize_iter;
+          
+          // ObfusGEM D-Cache Error Injection
+          if(blk->srcMasterId == 11 && dcache_lock)
+            {
+              for(blkSize_iter = 0; blkSize_iter < blkSize; blkSize_iter++)
+                {
+                  if(dcache_err_rate > (rand() % cache_err_rate_denom))
+                    blk->data[blkSize_iter] = blk->data[blkSize_iter] ^ (uint8_t)dcache_err_severity;
+                }
+            }
+          // ObfusGEM I-Cache Error Injection
+          else if(blk->srcMasterId == 7 && icache_lock)
+            {
+              for(blkSize_iter = 0; blkSize_iter < blkSize; blkSize_iter++)
+                {
+                  if(icache_err_rate > (rand() % cache_err_rate_denom))
+                    blk->data[blkSize_iter] = blk->data[blkSize_iter] ^ (uint8_t)icache_err_severity;
+                }
+            }
+
             pkt->writeDataToBlock(blk->data, blkSize);
         }
         // Always mark the line as dirty (and thus transition to the
