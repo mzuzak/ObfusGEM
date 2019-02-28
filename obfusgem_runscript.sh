@@ -19,14 +19,14 @@ for bm in "${benchmarks[@]}"; do
     echo "OBFUSGEM: Currently running benchmark: $bm, run: $cur_run"
 
     #Remove Checkpoints
-    rm -rf ./m5out/cpt.*
+    rm -rf ./m5out/cpt.* 2> /dev/null
 
     # Generate clean ObfusGEM header
     ./../helper_scripts/gen_clean_header.sh
     
     # Rebuild
-    rm ./build/X86/gem5.opt
-    rm ./build/X86/gem5.gold
+    rm ./build/X86/gem5.opt 2> /dev/null
+    rm ./build/X86/gem5.gold 2> /dev/null
     scons ./build/X86/gem5.opt
 
     # Sometimes execute priveledges are not granted. Grant them.
@@ -43,8 +43,8 @@ for bm in "${benchmarks[@]}"; do
     ./../helper_scripts/gen_obfusgem_header.sh
     
     # Rebuild Obfuscated Copy
-    rm ./build/X86/gem5.opt
-    rm ./build/X86/gem5.obfus
+    rm ./build/X86/gem5.opt 2> /dev/null
+    rm ./build/X86/gem5.obfus 2> /dev/null
     scons ./build/X86/gem5.opt
 
     # Copy off obfuscated image

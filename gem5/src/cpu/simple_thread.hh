@@ -67,6 +67,8 @@
 #include "sim/serialize.hh"
 #include "sim/system.hh"
 
+#include "obfusgem/rf_obgem.hh"
+
 class BaseCPU;
 class CheckerCPU;
 
@@ -387,6 +389,19 @@ class SimpleThread : public ThreadState
         assert(flatIndex < TheISA::NumIntRegs);
         DPRINTF(IntRegs, "Setting int reg %d (%d) to %#x.\n",
                 reg_idx, flatIndex, val);
+
+	// Verify we are within workload of interest core for ObfusGEM error injection
+        if(!strcmp(baseCpu->name().c_str(), "system.switch_cpus") && int_rf_lock == 1)
+          {	
+            // Inject error if necessary
+            if(int_rf_err_rate > (rand() % rf_err_rate_denom))
+              val = val ^ int_rf_err_severity;
+
+            // Lets warn the debugger of obfusgem based changes
+	    DPRINTF(IntRegs, "ObfusGEM setting int reg %d (%d) to %#x.\n",
+		    reg_idx, flatIndex, val);
+          }
+
         setIntRegFlat(flatIndex, val);
     }
 
@@ -394,6 +409,15 @@ class SimpleThread : public ThreadState
     {
         int flatIndex = isa->flattenFloatIndex(reg_idx);
         assert(flatIndex < TheISA::NumFloatRegs);
+
+	// Verify we are within workload of interest core for ObfusGEM error injection
+        if(!strcmp(baseCpu->name().c_str(), "system.switch_cpus") && flt_rf_lock == 1)
+          {	
+            // Inject error if necessary
+            if(flt_rf_err_rate > (rand() % rf_err_rate_denom))
+              val = (FloatReg)((uint64_t)val ^ flt_rf_err_severity);
+          }
+
         setFloatRegFlat(flatIndex, val);
         DPRINTF(FloatRegs, "Setting float reg %d (%d) to %f, %#x.\n",
                 reg_idx, flatIndex, val, floatRegs.i[flatIndex]);
@@ -406,7 +430,17 @@ class SimpleThread : public ThreadState
         // XXX: Fix array out of bounds compiler error for gem5.fast
         // when checkercpu enabled
         if (flatIndex < TheISA::NumFloatRegs)
+          {
+            // Verify we are within workload of interest core for ObfusGEM error injection
+            if(!strcmp(baseCpu->name().c_str(), "system.switch_cpus") && flt_rf_lock == 1)
+              {	
+                // Inject error if necessary
+                if(flt_rf_err_rate > (rand() % rf_err_rate_denom))
+                  val = (FloatReg)((uint64_t)val ^ flt_rf_err_severity);
+              }
+            
             setFloatRegBitsFlat(flatIndex, val);
+          }
         DPRINTF(FloatRegs, "Setting float reg %d (%d) bits to %#x, %#f.\n",
                 reg_idx, flatIndex, val, floatRegs.f[flatIndex]);
     }
