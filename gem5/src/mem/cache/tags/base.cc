@@ -52,9 +52,12 @@
 #include "mem/cache/base.hh"
 #include "sim/sim_exit.hh"
 
+#include "obfusgem/cache_tag_obgem.hh"
+
 BaseTags::BaseTags(const Params *p)
     : ClockedObject(p), blkSize(p->block_size), blkMask(blkSize - 1),
       size(p->size),
+      numSets(p->size / (p->block_size * 2)),
       lookupLatency(p->tag_latency),
       accessLatency(p->sequential_access ?
                     p->tag_latency + p->data_latency :
@@ -113,6 +116,26 @@ BaseTags::insertBlock(PacketPtr pkt, CacheBlk *blk)
     occupancies[master_id]++;
     blk->srcMasterId = master_id;
 
+    // ObfusGEM D-Cache Tag Error Injection
+    if(blk->srcMasterId == 11 && dcache_tag_lock)
+      {
+        int setShift = floorLog2(blkSize);
+        int tagShift = setShift + floorLog2(numSets);
+
+        if(dcache_tag_err_rate > (rand() % cache_tag_err_rate_denom))
+          blk->tag = ((extractTag(addr) ^ (uint64_t)dcache_tag_err_severity) << (tagShift)) >> (tagShift);
+      }
+
+    // ObfusGEM I-Cache Tag Error Injection
+    if(blk->srcMasterId == 7 && icache_tag_lock)
+      {
+        int setShift = floorLog2(blkSize);
+        int tagShift = setShift + floorLog2(numSets);
+
+        if(icache_tag_err_rate > (rand() % cache_tag_err_rate_denom))
+          blk->tag = ((extractTag(addr) ^ (uint64_t)icache_tag_err_severity) << (tagShift)) >> (tagShift);
+      }
+        
     // Set task id
     blk->task_id = pkt->req->taskId();
 
