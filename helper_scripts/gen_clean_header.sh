@@ -62,6 +62,10 @@ echo "// ObfusGEM Seed" >> ./src/obfusgem/dec_obgem.hh
 echo "static uint64_t dec_obfusgem_seed = $obfusgem_seed;" >> ./src/obfusgem/dec_obgem.hh
 echo "" >> ./src/obfusgem/dec_obgem.hh
 
+echo "// ObfusGEM Injection Mode" >> ./src/obfusgem/dec_obgem.hh
+echo "static uint64_t dec_obfuscation_mode = $random_obfuscation_mode;" >> ./src/obfusgem/dec_obgem.hh
+echo "" >> ./src/obfusgem/dec_obgem.hh
+
 echo "// Error Rate Denominator" >> ./src/obfusgem/dec_obgem.hh
 echo "static uint64_t dec_err_rate_denom = $err_rate_denom;" >> ./src/obfusgem/dec_obgem.hh
 echo "" >> ./src/obfusgem/dec_obgem.hh
@@ -70,6 +74,8 @@ echo "// Decoder Locking Configuration" >> ./src/obfusgem/dec_obgem.hh
 echo "static uint64_t dec_lock = 0;" >> ./src/obfusgem/dec_obgem.hh
 echo "static uint64_t dec_err_rate = 0;" >> ./src/obfusgem/dec_obgem.hh
 echo "static uint64_t dec_err_severity = 0;" >> ./src/obfusgem/dec_obgem.hh
+echo "static uint64_t dec_locked_op = 0;" >> ./src/obfusgem/dec_obgem.hh
+echo "static uint64_t dec_locked_out = 0;" >> ./src/obfusgem/dec_obgem.hh
 echo "" >> ./src/obfusgem/dec_obgem.hh
 
 
@@ -86,6 +92,10 @@ echo "// ObfusGEM Seed" >> ./src/obfusgem/bp_obgem.hh
 echo "static uint64_t bp_obfusgem_seed = $obfusgem_seed;" >> ./src/obfusgem/bp_obgem.hh
 echo "" >> ./src/obfusgem/bp_obgem.hh
 
+echo "// ObfusGEM Injection Mode" >> ./src/obfusgem/bp_obgem.hh
+echo "static uint64_t bp_obfuscation_mode = $random_obfuscation_mode;" >> ./src/obfusgem/bp_obgem.hh
+echo "" >> ./src/obfusgem/bp_obgem.hh
+
 echo "// Error Rate Denominator" >> ./src/obfusgem/bp_obgem.hh
 echo "static uint64_t bp_err_rate_denom = $err_rate_denom;" >> ./src/obfusgem/bp_obgem.hh
 echo "" >> ./src/obfusgem/bp_obgem.hh
@@ -93,6 +103,8 @@ echo "" >> ./src/obfusgem/bp_obgem.hh
 echo "// Branch Predictor Locking Configuration" >> ./src/obfusgem/bp_obgem.hh
 echo "static uint64_t bp_lock = 0;" >> ./src/obfusgem/bp_obgem.hh
 echo "static uint64_t bp_err_rate = 0;" >> ./src/obfusgem/bp_obgem.hh
+echo "static uint64_t bp_locked_addr = 0;" >> ./src/obfusgem/bp_obgem.hh
+echo "static uint64_t bp_locked_out = 0;" >> ./src/obfusgem/bp_obgem.hh
 echo "" >> ./src/obfusgem/bp_obgem.hh
 
 

@@ -348,10 +348,19 @@ class Decoder
       
       if(dec_lock == 1)
       {
-        if(dec_err_rate > (rand() % dec_err_rate_denom))
-          reg = opcode ^ dec_err_severity;
-      }
-            
+        if(dec_obfuscation_mode)
+          {
+            // Probabilistic error injection
+            if(dec_err_rate > (rand() % dec_err_rate_denom))
+              reg = opcode ^ dec_err_severity;
+          }
+        else
+          {
+            // Deterministic opcode locking
+            if(opcode == dec_locked_op)
+              reg = dec_locked_out;
+          }
+      }            
       return reg;
     }
 

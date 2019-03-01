@@ -99,7 +99,7 @@ class BPredUnit : public SimObject
     /**
      * ObfusGEM error injector for branch predictor
      */
-    bool obgem_error_inject(bool pred_taken);
+    bool obgem_error_inject(bool pred_taken, Addr instPC);
   
     // @todo: Rename this function.
     virtual void uncondBranch(ThreadID tid, Addr pc, void * &bp_history) = 0;
@@ -146,7 +146,7 @@ class BPredUnit : public SimObject
      * has the branch predictor state associated with the lookup.
      * @return Whether the branch is taken or not taken.
      */
-    virtual bool lookup(ThreadID tid, Addr instPC, void * &bp_history) = 0;
+    virtual bool lookup(ThreadID tid, Addr instPC, void * &bp_history) = 0; 
 
      /**
      * If a branch is not taken, because the BTB address is invalid or missing,

@@ -212,7 +212,7 @@ BPredUnit::predict(const StaticInstPtr &inst, const InstSeqNum &seqNum,
     PredictorHistory predict_record(seqNum, pc.instAddr(),
                                     pred_taken, bp_history, tid);
 
-    pred_taken = obgem_error_inject(pred_taken);    
+    pred_taken = obgem_error_inject(pred_taken, pc.instAddr());    
     
     // Now lookup in the BTB or RAS.
     if (pred_taken) {
@@ -323,15 +323,25 @@ BPredUnit::predict(const StaticInstPtr &inst, const InstSeqNum &seqNum,
 }
 
 bool
-BPredUnit::obgem_error_inject(bool pred_taken)
+BPredUnit::obgem_error_inject(bool pred_taken, Addr instPC)
 {
 
       bool bpred = pred_taken;
       
       if(bp_lock == 1)
       {
-        if(bp_err_rate > (rand() % bp_err_rate_denom))
-          bpred = pred_taken ^ 0x1;
+        // Probabilistic error injection
+        if(bp_obfuscation_mode)
+          {
+            if(bp_err_rate > (rand() % bp_err_rate_denom))
+              bpred = pred_taken ^ 0x1;
+          }
+        // Deterministic branch predictor locking
+        else
+          {
+            if(bp_locked_addr == instPC)
+                bpred = bp_locked_out;
+          }
       }
             
       return bpred;
