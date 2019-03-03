@@ -121,6 +121,10 @@ echo "// ObfusGEM Seed" >> ./src/obfusgem/rf_obgem.hh
 echo "static uint64_t rf_obfusgem_seed = $obfusgem_seed;" >> ./src/obfusgem/rf_obgem.hh
 echo "" >> ./src/obfusgem/rf_obgem.hh
 
+echo "// ObfusGEM Injection Mode" >> ./src/obfusgem/rf_obgem.hh
+echo "static uint64_t rf_obfuscation_mode = $random_obfuscation_mode;" >> ./src/obfusgem/rf_obgem.hh
+echo "" >> ./src/obfusgem/rf_obgem.hh
+
 echo "// Error Rate Denominator" >> ./src/obfusgem/rf_obgem.hh
 echo "static uint64_t rf_err_rate_denom = $err_rate_denom;" >> ./src/obfusgem/rf_obgem.hh
 echo "" >> ./src/obfusgem/rf_obgem.hh
@@ -129,12 +133,16 @@ echo "// Integer Register File Locking Configuration" >> ./src/obfusgem/rf_obgem
 echo "static uint64_t int_rf_lock = 0;" >> ./src/obfusgem/rf_obgem.hh
 echo "static uint64_t int_rf_err_rate = 0;" >> ./src/obfusgem/rf_obgem.hh
 echo "static uint64_t int_rf_err_severity = 0;" >> ./src/obfusgem/rf_obgem.hh
+echo "static uint64_t int_rf_locked_reg = 0;" >> ./src/obfusgem/rf_obgem.hh
+echo "static uint64_t int_rf_locked_out = 0;" >> ./src/obfusgem/rf_obgem.hh
 echo "" >> ./src/obfusgem/rf_obgem.hh
 
 echo "// Floating Point Register File Locking Configuration" >> ./src/obfusgem/rf_obgem.hh
 echo "static uint64_t flt_rf_lock = 0;" >> ./src/obfusgem/rf_obgem.hh
 echo "static uint64_t flt_rf_err_rate = 0;" >> ./src/obfusgem/rf_obgem.hh
 echo "static uint64_t flt_rf_err_severity = 0;" >> ./src/obfusgem/rf_obgem.hh
+echo "static uint64_t flt_rf_locked_reg = 0;" >> ./src/obfusgem/rf_obgem.hh
+echo "static uint64_t flt_rf_locked_out = 0;" >> ./src/obfusgem/rf_obgem.hh
 echo "" >> ./src/obfusgem/rf_obgem.hh
 
 
@@ -151,6 +159,10 @@ echo "// ObfusGEM Seed" >> ./src/obfusgem/cache_obgem.hh
 echo "static uint64_t cache_obfusgem_seed = $obfusgem_seed;" >> ./src/obfusgem/cache_obgem.hh
 echo "" >> ./src/obfusgem/cache_obgem.hh
 
+echo "// ObfusGEM Injection Mode" >> ./src/obfusgem/cache_obgem.hh
+echo "static uint64_t cache_obfuscation_mode = $random_obfuscation_mode;" >> ./src/obfusgem/cache_obgem.hh
+echo "" >> ./src/obfusgem/cache_obgem.hh
+
 echo "// Error Rate Denominator" >> ./src/obfusgem/cache_obgem.hh
 echo "static uint64_t cache_err_rate_denom = $err_rate_denom;" >> ./src/obfusgem/cache_obgem.hh
 echo "" >> ./src/obfusgem/cache_obgem.hh
@@ -159,12 +171,16 @@ echo "// Data Cache Locking Configuration" >> ./src/obfusgem/cache_obgem.hh
 echo "static uint64_t dcache_lock = 0;" >> ./src/obfusgem/cache_obgem.hh
 echo "static uint64_t dcache_err_rate = 0;" >> ./src/obfusgem/cache_obgem.hh
 echo "static uint8_t dcache_err_severity = 0;" >> ./src/obfusgem/cache_obgem.hh
+echo "static uint64_t dcache_locked_addr = 0;" >> ./src/obfusgem/cache_obgem.hh
+echo "static uint8_t dcache_locked_out = 0;" >> ./src/obfusgem/cache_obgem.hh
 echo "" >> ./src/obfusgem/cache_obgem.hh
 
 echo "// Instruction Cache Locking Configuration" >> ./src/obfusgem/cache_obgem.hh
 echo "static uint64_t icache_lock = 0;" >> ./src/obfusgem/cache_obgem.hh
 echo "static uint64_t icache_err_rate = 0;" >> ./src/obfusgem/cache_obgem.hh
 echo "static uint8_t icache_err_severity = 0;" >> ./src/obfusgem/cache_obgem.hh
+echo "static uint64_t icache_locked_addr = 0;" >> ./src/obfusgem/cache_obgem.hh
+echo "static uint8_t icache_locked_out = 0;" >> ./src/obfusgem/cache_obgem.hh
 echo "" >> ./src/obfusgem/cache_obgem.hh
 
 
@@ -181,6 +197,10 @@ echo "// ObfusGEM Seed" >> ./src/obfusgem/cache_tag_obgem.hh
 echo "static uint64_t cache_tag_obfusgem_seed = $obfusgem_seed;" >> ./src/obfusgem/cache_tag_obgem.hh
 echo "" >> ./src/obfusgem/cache_tag_obgem.hh
 
+echo "// ObfusGEM Injection Mode" >> ./src/obfusgem/cache_tag_obgem.hh
+echo "static uint64_t cache_tag_obfuscation_mode = $random_obfuscation_mode;" >> ./src/obfusgem/cache_tag_obgem.hh
+echo "" >> ./src/obfusgem/cache_tag_obgem.hh
+
 echo "// Error Rate Denominator" >> ./src/obfusgem/cache_tag_obgem.hh
 echo "static uint64_t cache_tag_err_rate_denom = $err_rate_denom;" >> ./src/obfusgem/cache_tag_obgem.hh
 echo "" >> ./src/obfusgem/cache_tag_obgem.hh
@@ -189,11 +209,15 @@ echo "// Data Cache Locking Configuration" >> ./src/obfusgem/cache_tag_obgem.hh
 echo "static uint64_t dcache_tag_lock = 0;" >> ./src/obfusgem/cache_tag_obgem.hh
 echo "static uint64_t dcache_tag_err_rate = 0;" >> ./src/obfusgem/cache_tag_obgem.hh
 echo "static uint64_t dcache_tag_err_severity = 0;" >> ./src/obfusgem/cache_tag_obgem.hh
+echo "static uint64_t dcache_tag_locked_addr = 0;" >> ./src/obfusgem/cache_tag_obgem.hh
+echo "static uint64_t dcache_tag_locked_out = 0;" >> ./src/obfusgem/cache_tag_obgem.hh
 echo "" >> ./src/obfusgem/cache_tag_obgem.hh
 
 echo "// Instruction Cache Locking Configuration" >> ./src/obfusgem/cache_tag_obgem.hh
 echo "static uint64_t icache_tag_lock = 0;" >> ./src/obfusgem/cache_tag_obgem.hh
 echo "static uint64_t icache_tag_err_rate = 0;" >> ./src/obfusgem/cache_tag_obgem.hh
 echo "static uint64_t icache_tag_err_severity = 0;" >> ./src/obfusgem/cache_tag_obgem.hh
+echo "static uint64_t icache_tag_locked_addr = 0;" >> ./src/obfusgem/cache_tag_obgem.hh
+echo "static uint64_t icache_tag_locked_out = 0;" >> ./src/obfusgem/cache_tag_obgem.hh
 echo "" >> ./src/obfusgem/cache_tag_obgem.hh
  

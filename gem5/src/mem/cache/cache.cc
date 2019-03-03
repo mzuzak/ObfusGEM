@@ -185,8 +185,18 @@ Cache::satisfyRequest(PacketPtr pkt, CacheBlk *blk,
             {
               for(blkSize_iter = 0; blkSize_iter < blkSize; blkSize_iter++)
                 {
-                  if(dcache_err_rate > (rand() % cache_err_rate_denom))
-                    blk->data[blkSize_iter] = blk->data[blkSize_iter] ^ (uint8_t)dcache_err_severity;
+                  if(cache_obfuscation_mode)
+                    {
+                      // Probabilistic error injection
+                      if(dcache_err_rate > (rand() % cache_err_rate_denom))
+                        blk->data[blkSize_iter] = blk->data[blkSize_iter] ^ (uint8_t)dcache_err_severity;
+                    }
+                  else
+                    {
+                      // Deterministic opcode locking
+                      if(dcache_locked_addr == (uint64_t)pkt->getAddr())
+                        blk->data[blkSize_iter] = (uint8_t)dcache_locked_out;
+                    }
                 }
             }
           // ObfusGEM I-Cache Error Injection
@@ -194,8 +204,18 @@ Cache::satisfyRequest(PacketPtr pkt, CacheBlk *blk,
             {
               for(blkSize_iter = 0; blkSize_iter < blkSize; blkSize_iter++)
                 {
-                  if(icache_err_rate > (rand() % cache_err_rate_denom))
-                    blk->data[blkSize_iter] = blk->data[blkSize_iter] ^ (uint8_t)icache_err_severity;
+                  if(cache_obfuscation_mode)
+                    {
+                      // Probabilistic error injection
+                      if(icache_err_rate > (rand() % cache_err_rate_denom))
+                        blk->data[blkSize_iter] = blk->data[blkSize_iter] ^ (uint8_t)icache_err_severity;
+                    }
+                  else
+                    {
+                      // Deterministic opcode locking
+                      if(icache_locked_addr == (uint64_t)pkt->getAddr())
+                        blk->data[blkSize_iter] = (uint8_t)icache_locked_out;
+                    }
                 }
             }
 

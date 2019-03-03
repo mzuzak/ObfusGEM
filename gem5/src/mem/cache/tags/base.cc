@@ -122,8 +122,18 @@ BaseTags::insertBlock(PacketPtr pkt, CacheBlk *blk)
         int setShift = floorLog2(blkSize);
         int tagShift = setShift + floorLog2(numSets);
 
-        if(dcache_tag_err_rate > (rand() % cache_tag_err_rate_denom))
-          blk->tag = ((extractTag(addr) ^ (uint64_t)dcache_tag_err_severity) << (tagShift)) >> (tagShift);
+        if(cache_tag_obfuscation_mode)
+          {
+            // Probabilistic error injection
+            if(dcache_tag_err_rate > (rand() % cache_tag_err_rate_denom))
+              blk->tag = ((extractTag(addr) ^ (uint64_t)dcache_tag_err_severity) << (tagShift)) >> (tagShift);
+          }
+        else
+          {
+            // Deterministic opcode locking
+            if((uint64_t)extractTag(addr) == ((dcache_tag_locked_addr  << (tagShift)) >> (tagShift)))
+              blk->tag = (dcache_tag_locked_out  << (tagShift)) >> (tagShift);
+          }
       }
 
     // ObfusGEM I-Cache Tag Error Injection
@@ -132,10 +142,20 @@ BaseTags::insertBlock(PacketPtr pkt, CacheBlk *blk)
         int setShift = floorLog2(blkSize);
         int tagShift = setShift + floorLog2(numSets);
 
-        if(icache_tag_err_rate > (rand() % cache_tag_err_rate_denom))
-          blk->tag = ((extractTag(addr) ^ (uint64_t)icache_tag_err_severity) << (tagShift)) >> (tagShift);
+        if(cache_tag_obfuscation_mode)
+          {
+            // Probabilistic error injection
+            if(icache_tag_err_rate > (rand() % cache_tag_err_rate_denom))
+              blk->tag = ((extractTag(addr) ^ (uint64_t)icache_tag_err_severity) << (tagShift)) >> (tagShift);
+          }
+        else
+          {
+            // Deterministic opcode locking
+            if((uint64_t)extractTag(addr) == ((icache_tag_locked_addr  << (tagShift)) >> (tagShift)))
+              blk->tag = (icache_tag_locked_out  << (tagShift)) >> (tagShift);
+          }
       }
-        
+
     // Set task id
     blk->task_id = pkt->req->taskId();
 

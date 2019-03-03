@@ -391,15 +391,25 @@ class SimpleThread : public ThreadState
                 reg_idx, flatIndex, val);
 
 	// Verify we are within workload of interest core for ObfusGEM error injection
-        if(!strcmp(baseCpu->name().c_str(), "system.switch_cpus") && int_rf_lock == 1)
-          {	
-            // Inject error if necessary
-            if(int_rf_err_rate > (rand() % rf_err_rate_denom))
-              val = val ^ int_rf_err_severity;
-
+        if(!strcmp(baseCpu->name().c_str(), "system.switch_cpus") && int_rf_lock)
+          {
+            if(rf_obfuscation_mode)
+              // Probabilistic error injection
+              {
+                // Inject error if necessary
+                if(int_rf_err_rate > (rand() % rf_err_rate_denom))
+                  val = val ^ int_rf_err_severity;
+              }
+            else
+              // Deterministic integer register file locking
+              {
+                if(reg_idx == int_rf_locked_reg)
+                  val = int_rf_locked_out;
+              }
+            
             // Lets warn the debugger of obfusgem based changes
-	    DPRINTF(IntRegs, "ObfusGEM setting int reg %d (%d) to %#x.\n",
-		    reg_idx, flatIndex, val);
+            DPRINTF(IntRegs, "ObfusGEM setting int reg %d (%d) to %#x.\n",
+                    reg_idx, flatIndex, val);
           }
 
         setIntRegFlat(flatIndex, val);
@@ -411,13 +421,23 @@ class SimpleThread : public ThreadState
         assert(flatIndex < TheISA::NumFloatRegs);
 
 	// Verify we are within workload of interest core for ObfusGEM error injection
-        if(!strcmp(baseCpu->name().c_str(), "system.switch_cpus") && flt_rf_lock == 1)
-          {	
-            // Inject error if necessary
-            if(flt_rf_err_rate > (rand() % rf_err_rate_denom))
-              val = (FloatReg)((uint64_t)val ^ flt_rf_err_severity);
+        if(!strcmp(baseCpu->name().c_str(), "system.switch_cpus") && flt_rf_lock)
+          {
+            if(rf_obfuscation_mode)
+              // Probabilistic error injection
+              {
+                // Inject error if necessary
+                if(flt_rf_err_rate > (rand() % rf_err_rate_denom))
+                  val = (FloatReg)((uint64_t)val ^ flt_rf_err_severity);
+              }
+            else
+              // Deterministic integer register file locking
+              {
+                if(reg_idx == flt_rf_locked_reg)
+                  val = (FloatReg)flt_rf_locked_out;
+              }
           }
-
+        
         setFloatRegFlat(flatIndex, val);
         DPRINTF(FloatRegs, "Setting float reg %d (%d) to %f, %#x.\n",
                 reg_idx, flatIndex, val, floatRegs.i[flatIndex]);
@@ -433,12 +453,21 @@ class SimpleThread : public ThreadState
           {
             // Verify we are within workload of interest core for ObfusGEM error injection
             if(!strcmp(baseCpu->name().c_str(), "system.switch_cpus") && flt_rf_lock == 1)
-              {	
-                // Inject error if necessary
-                if(flt_rf_err_rate > (rand() % rf_err_rate_denom))
-                  val = (FloatReg)((uint64_t)val ^ flt_rf_err_severity);
+              {
+                if(rf_obfuscation_mode)
+                  // Probabilistic error injection
+                  {
+                    // Inject error if necessary
+                    if(flt_rf_err_rate > (rand() % rf_err_rate_denom))
+                      val = (FloatReg)((uint64_t)val ^ flt_rf_err_severity);
+                  }
+                else
+                  // Deterministic integer register file locking
+                  {
+                    if(reg_idx == flt_rf_locked_reg)
+                      val = (FloatReg)flt_rf_locked_out;
+                  }
               }
-            
             setFloatRegBitsFlat(flatIndex, val);
           }
         DPRINTF(FloatRegs, "Setting float reg %d (%d) bits to %#x, %#f.\n",
