@@ -136,14 +136,14 @@ let {{
         buildXSRegDataInst(mnem, code, flagType, buildCc, buildNonCc)
         buildXERegDataInst(mnem, code, flagType, buildCc, buildNonCc)
 
-    buildXImmDataInst("adr", "Dest64 = RawPC + imm", buildCc = False);
+    buildXImmDataInst("adr", "Dest64 = obgem_error_inject(RawPC + imm, RawPC, imm, 0, 0)", buildCc = False);
     buildXImmDataInst("adrp", "Dest64 = (RawPC & ~mask(12)) + imm",
                       buildCc = False);
     buildDataInst("and", "Dest64 = resTemp = Op164 & secOp;")
     buildDataInst("eor", "Dest64 = Op164 ^ secOp;", buildCc = False)
     buildXSRegDataInst("eon", "Dest64 = Op164 ^ ~secOp;", buildCc = False)
-    buildDataInst("sub", "Dest64 = resTemp = Op164 - secOp;", "sub")
-    buildDataInst("add", "Dest64 = resTemp = Op164 + secOp;", "add")
+    buildDataInst("sub", "Dest64 = resTemp = obgem_error_inject(Op164 - secOp, Op164, secOp, 0, 0);", "sub")
+    buildDataInst("add", "Dest64 = resTemp = obgem_error_inject(Op164 + secOp, Op164, secOp, 0, 0);", "add")
     buildXSRegDataInst("adc",
             "Dest64 = resTemp = Op164 + secOp + %s;" % oldC, "add")
     buildXSRegDataInst("sbc",
