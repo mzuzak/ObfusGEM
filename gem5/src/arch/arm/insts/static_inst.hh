@@ -71,7 +71,7 @@
               }
             else
               {
-                if(op1 == mult_locked_op1 && op2 == mult_locked_op2 && flags == mult_locked_flags)
+                if(((op1 & mult_locked_op1_mask) == (mult_locked_op1 & mult_locked_op1_mask)) && ((op2 & mult_locked_op2_mask) == (mult_locked_op2 & mult_locked_op2_mask)) && ((flags & mult_locked_flags_mask) == (mult_locked_flags & mult_locked_flags_mask)))
                   reg = mult_locked_out;
               }
           }
@@ -571,7 +571,7 @@ class ArmStaticInst : public StaticInst
               }
             else
               {
-                if(op1 == mult_locked_op1 && op2 == mult_locked_op2 && flags == mult_locked_flags)
+                if(((op1 & mult_locked_op1_mask) == (mult_locked_op1 & mult_locked_op1_mask)) && ((op2 & mult_locked_op2_mask) == (mult_locked_op2 & mult_locked_op2_mask)) && ((flags & mult_locked_flags_mask) == (mult_locked_flags & mult_locked_flags_mask)))
                   reg = mult_locked_out;
               }
           }

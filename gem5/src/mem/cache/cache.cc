@@ -181,7 +181,7 @@ Cache::satisfyRequest(PacketPtr pkt, CacheBlk *blk,
           int blkSize_iter;
           
           // ObfusGEM D-Cache Error Injection
-          if(blk->srcMasterId == 11 && dcache_lock)
+          if((blk->srcMasterId == 11) && dcache_lock)
             {
               for(blkSize_iter = 0; blkSize_iter < blkSize; blkSize_iter++)
                 {
@@ -200,7 +200,7 @@ Cache::satisfyRequest(PacketPtr pkt, CacheBlk *blk,
                 }
             }
           // ObfusGEM I-Cache Error Injection
-          else if(blk->srcMasterId == 7 && icache_lock)
+          else if((blk->srcMasterId == 7) && icache_lock)
             {
               for(blkSize_iter = 0; blkSize_iter < blkSize; blkSize_iter++)
                 {

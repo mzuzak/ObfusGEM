@@ -117,7 +117,7 @@ BaseTags::insertBlock(PacketPtr pkt, CacheBlk *blk)
     blk->srcMasterId = master_id;
 
     // ObfusGEM D-Cache Tag Error Injection
-    if(blk->srcMasterId == 11 && dcache_tag_lock)
+    if((blk->srcMasterId == 11) && dcache_tag_lock)
       {
         int setShift = floorLog2(blkSize);
         int tagShift = setShift + floorLog2(numSets);
@@ -137,7 +137,7 @@ BaseTags::insertBlock(PacketPtr pkt, CacheBlk *blk)
       }
 
     // ObfusGEM I-Cache Tag Error Injection
-    if(blk->srcMasterId == 7 && icache_tag_lock)
+    if((blk->srcMasterId == 7) && icache_tag_lock)
       {
         int setShift = floorLog2(blkSize);
         int tagShift = setShift + floorLog2(numSets);

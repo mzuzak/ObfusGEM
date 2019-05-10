@@ -48,6 +48,9 @@ echo "static uint64_t mult_err_severity = $mult_err_severity;" >> ./src/obfusgem
 echo "static uint64_t mult_locked_op1 = $mult_locked_op1;" >> ./src/obfusgem/alu_obgem.hh
 echo "static uint64_t mult_locked_op2 = $mult_locked_op2;" >> ./src/obfusgem/alu_obgem.hh
 echo "static uint64_t mult_locked_flags = $mult_locked_flags;" >> ./src/obfusgem/alu_obgem.hh
+echo "static uint64_t mult_locked_op1_mask = $mult_locked_op1_mask" >> ./src/obfusgem/alu_obgem.hh
+echo "static uint64_t mult_locked_op2_mask = $mult_locked_op2_mask;" >> ./src/obfusgem/alu_obgem.hh
+echo "static uint64_t mult_locked_flags_mask = $mult_locked_flags_mask;" >> ./src/obfusgem/alu_obgem.hh
 echo "static uint64_t mult_locked_out = $mult_locked_out;" >> ./src/obfusgem/alu_obgem.hh
 echo "" >> ./src/obfusgem/alu_obgem.hh
 
