@@ -1,0 +1,19 @@
+#!/bin/bash
+
+PARSEC_DIR="/home/root/parsec-3.0"
+cd $PARSEC_DIR
+pwd
+source ./env.sh
+
+cd ext/splash2x/apps/water_spatial/inputs
+tar -xvf input_simsmall.tar
+
+cd ../obj/aarch64-linux.gcc/
+
+m5 resetstats
+m5 checkpoint
+
+./run.sh 1 simsmall
+
+m5 dumpresetstats
+m5 exit

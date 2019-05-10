@@ -1,0 +1,19 @@
+#!/bin/bash
+
+PARSEC_DIR="/home/root/parsec-3.0"
+cd $PARSEC_DIR
+pwd
+source ./env.sh
+
+cd pkgs/apps/blackscholes/inputs/
+tar -xvf input_simsmall.tar
+
+cd ../obj/aarch64-linux.gcc/
+
+m5 resetstats
+m5 checkpoint
+
+./blackscholes 1 ./../../inputs/in_4K.txt prices.txt
+
+m5 dumpresetstats
+m5 exit

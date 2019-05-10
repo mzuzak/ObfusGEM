@@ -1,0 +1,21 @@
+#!/bin/bash
+
+PARSEC_DIR="/home/root/parsec-3.0"
+cd $PARSEC_DIR
+pwd
+source ./env.sh
+
+cd ext/splash2x/apps/barnes/inputs
+tar -xvf input_simsmall.tar
+
+cd ../obj/aarch64-linux.gcc/
+
+m5 resetstats
+m5 checkpoint
+
+echo "Hello!"
+./run.sh 1 simdev
+
+m5 dumpresetstats
+
+m5 exit

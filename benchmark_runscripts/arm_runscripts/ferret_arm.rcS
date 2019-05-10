@@ -1,0 +1,20 @@
+#!/bin/bash
+
+PARSEC_DIR="/home/root/parsec-3.0"
+cd $PARSEC_DIR
+pwd
+source ./env.sh
+
+cd pkgs/apps/ferret/inputs/
+tar -xvf input_simsmall.tar
+
+cd ../inst/aarch64-linux.gcc/bin/
+
+m5 resetstats
+m5 checkpoint
+
+./ferret ../../../inputs/corel lsh queries 10 20 1 output.txt
+
+
+m5 dumpresetstats
+m5 exit
