@@ -1381,9 +1381,9 @@ class HPI_DCache(Cache):
     size = '32kB'
     assoc = 4
     write_buffers = 4
-    prefetcher = StridePrefetcher(
-        queue_size=4,
-        degree=4)
+    #prefetcher = StridePrefetcher(
+    #    queue_size=4,
+    #    degree=4)
 
 class HPI_L2(Cache):
     data_latency = 13

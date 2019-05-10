@@ -146,7 +146,7 @@ $cmd2 = "$sim2 -d $dir2 $args2 2>&1 |";
 
 # Expect that rundiff is in the same dir as the tracediff script.
 # FindBin figures that out for us.
-$fullcmd = "$FindBin::Bin/rundiff -l 10 -c 10 '$cmd1' '$cmd2' 2>&1 > tracediff-$$.out";
+$fullcmd = "$FindBin::Bin/rundiff -l 2048 -c 10 '$cmd1' '$cmd2' 2>&1 > tracediff-$$.out";
 
 print "Executing $fullcmd\n";
 system($fullcmd);
