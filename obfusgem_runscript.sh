@@ -2,6 +2,7 @@
 
 timeout=60
 log="tracediff.log"
+terminal="system.terminal"
 match="Lost sync!"
 
 # Load ObfusGEM simulator parameters
@@ -12,12 +13,6 @@ cd gem5
 
 for bm in "${benchmarks[@]}"; do
 
-    # Reset Monte Carlo Run count   
-    cur_run=1
-
-    # Current Benchmark
-    echo "OBFUSGEM: Currently running benchmark: $bm, run: $cur_run"
-
     #Remove Checkpoints
     rm -rf ./m5out/cpt.* 2> /dev/null
 
@@ -25,41 +20,57 @@ for bm in "${benchmarks[@]}"; do
     ./../helper_scripts/gen_clean_header.sh
     
     # Rebuild
-    rm ./build/X86/gem5.opt 2> /dev/null
-    rm ./build/X86/gem5.gold 2> /dev/null
-    scons ./build/X86/gem5.opt
+    rm ./build/$arch/gem5.opt 2> /dev/null
+    rm ./build/$arch/gem5.gold 2> /dev/null
+    scons ./build/$arch/gem5.opt
 
     # Sometimes execute priveledges are not granted. Grant them.
-    chmod +x ./build/X86/gem5.opt
+    chmod +x ./build/$arch/gem5.opt
     
     # Copy off as gold image
     sleep 5
-    cp ./build/X86/gem5.opt ./build/X86/gem5.gold
+    cp ./build/$arch/gem5.opt ./build/$arch/gem5.gold
 
     # Checkpoint Creation Run
-    ./build/X86/gem5.opt ./configs/example/fs.py --script=../benchmark_runscripts/$bm.rcS --caches --cpu-type=TimingSimpleCPU
+    ./build/$arch/gem5.opt $gem5_config --script=./../benchmark_runscripts/$bm.rcS ${gem5_args[@]}
 
-    # Update ObfusGEM Configuration File
-    ./../helper_scripts/gen_obfusgem_header.sh
+    # Remove stale checkpoints
+    rm -rf ./tracediff-1/cpt.* 2> /dev/null
+    rm -rf ./tracediff-2/cpt.* 2> /dev/null
     
-    # Rebuild Obfuscated Copy
-    rm ./build/X86/gem5.opt 2> /dev/null
-    rm ./build/X86/gem5.obfus 2> /dev/null
-    scons ./build/X86/gem5.opt
-
-    # Copy off obfuscated image
-    sleep 5
-    cp ./build/X86/gem5.opt ./build/X86/gem5.obfus
-
     # Copy off checkpoints
-    cp -r ./m5out/cpt.* ./tracediff-1/
-    cp -r ./m5out/cpt.* ./tracediff-2/
+    cp -r ./m5out/cpt.* ./tracediff-1/ 2> /dev/null
+    cp -r ./m5out/cpt.* ./tracediff-2/ 2> /dev/null
+
+    # Reset Monte Carlo Run count   
+    cur_run=1
+
+    # Current Benchmark
+    echo "OBFUSGEM: Currently running benchmark: $bm, run: $cur_run"
     
     # Monte Carlo Run Count
     while [[ $cur_run -le $monte_carlo_runs ]]; do
 
+        # Update ObfusGEM Configuration File
+        ./../helper_scripts/gen_obfusgem_header.sh
+    
+        # Rebuild Obfuscated Copy
+        rm ./build/$arch/gem5.opt 2> /dev/null
+        rm ./build/$arch/gem5.obfus 2> /dev/null
+        scons ./build/$arch/gem5.opt
+
+        # Copy off obfuscated image
+        sleep 5
+        cp ./build/$arch/gem5.opt ./build/$arch/gem5.obfus
+
         # Start stochastic fault injection run. Monitor both simulations and terminate on persistent difference.
-        ./util/tracediff './build/X86/gem5.gold|./build/X86/gem5.obfus' --debug-flags=Exec,-ExecTicks ./configs/example/fs.py -r 1 --script=../benchmark_runscripts/$bm.rcS --caches --cpu-type=TimingSimpleCPU > "$log" 2>&1 &
+        cd m5out
+        cpt_pattern="cpt.*"
+        cpt_files=( $cpt_pattern )
+        echo "${cpt_files[0]}"
+        cd -
+
+        ./util/tracediff './build/X86/gem5.gold|./build/X86/gem5.obfus' --debug-flags=Exec,-ExecTicks $gem5_config $gem5_cpt_restore --script=../benchmark_runscripts/$bm.rcS ${gem5_args[@]} > "$log" 2>&1 &
         pid=$!
 
         # Checker loop -- Kill simulation process when traces diverge or benchmark completes
@@ -79,14 +90,15 @@ for bm in "${benchmarks[@]}"; do
         runstring="sim.$(date +%F_%R)"
         mkdir -p ./../obgem_out/$bm/$runstring
         mv ./$log ./../obgem_out/$bm/$runstring/
+        mv ./$terminal ./../obgem_out/$bm/$runstring/
         mv ./tracediff-*.out ./../obgem_out/$bm/$runstring/
 	mv ./tracediff-2/stats.txt ./../obgem_out/$bm/$runstring/
         mv ./tracediff-2/config.ini ./../obgem_out/$bm/$runstring/
         mv ./tracediff-2/system.* ./../obgem_out/$bm/$runstring/
 
         # Remove files not archived
-        rm -rf ./tracediff-1/*
-        rm -rf ./tracediff-2/*
+        rm ./tracediff-1/*
+        rm ./tracediff-2/*
 
 	# Copy in monte-carlo parser to update global data
         cp ./../helper_scripts/parse_tracediff.py ./../obgem_out/$bm/$runstring/

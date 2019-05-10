@@ -35,6 +35,9 @@ echo "static uint64_t adder_err_severity = $adder_err_severity;" >> ./src/obfusg
 echo "static uint64_t adder_locked_op1 = $adder_locked_op1;" >> ./src/obfusgem/alu_obgem.hh
 echo "static uint64_t adder_locked_op2 = $adder_locked_op2;" >> ./src/obfusgem/alu_obgem.hh
 echo "static uint64_t adder_locked_flags = $adder_locked_flags;" >> ./src/obfusgem/alu_obgem.hh
+echo "static uint64_t adder_locked_op1_mask = $adder_locked_op1_mask" >> ./src/obfusgem/alu_obgem.hh
+echo "static uint64_t adder_locked_op2_mask = $adder_locked_op2_mask;" >> ./src/obfusgem/alu_obgem.hh
+echo "static uint64_t adder_locked_flags_mask = $adder_locked_flags_mask;" >> ./src/obfusgem/alu_obgem.hh
 echo "static uint64_t adder_locked_out = $adder_locked_out;" >> ./src/obfusgem/alu_obgem.hh
 echo "" >> ./src/obfusgem/alu_obgem.hh
 
