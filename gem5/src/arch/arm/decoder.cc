@@ -78,6 +78,8 @@ Decoder::process()
     // emi is typically ready, with some caveats below...
     instDone = true;
 
+    emi.instBits = obgem_error_inject(emi.instBits);
+    
     if (!emi.thumb) {
         emi.instBits = data;
         if (!emi.aarch64) {
