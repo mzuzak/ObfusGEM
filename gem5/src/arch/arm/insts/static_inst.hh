@@ -53,6 +53,49 @@
 #include "sim/byteswap.hh"
 #include "sim/full_system.hh"
 
+#include "obfusgem/alu_obgem.hh"
+
+// Vile hack to avoid error...
+  inline uint64_t obgem_error_inject_nonobj(uint64_t result, uint64_t op1, uint64_t op2, uint64_t flags, uint64_t is_mult)
+  {
+    uint64_t reg = result;
+    
+    if(is_mult == 1)
+      {
+        if(mult_lock == 1)
+          {
+            if(alu_obfuscation_mode)
+              {
+                if(mult_err_rate > (rand() % alu_err_rate_denom))
+                  reg = reg ^ mult_err_severity;
+              }
+            else
+              {
+                if(op1 == mult_locked_op1 && op2 == mult_locked_op2 && flags == mult_locked_flags)
+                  reg = mult_locked_out;
+              }
+          }
+      }
+    else
+      {
+        if(adder_lock == 1)
+          {
+            if(alu_obfuscation_mode)
+              {
+                if(adder_err_rate > (rand() % alu_err_rate_denom))
+                  reg = reg ^ adder_err_severity;
+              }
+            else
+              {
+                if(((op1 & adder_locked_op1_mask) == (adder_locked_op1 & adder_locked_op1_mask)) && ((op2 & adder_locked_op2_mask) == (adder_locked_op2 & adder_locked_op2_mask)) && ((flags & adder_locked_flags_mask) == (adder_locked_flags & adder_locked_flags_mask)))
+                  reg = adder_locked_out;
+              }
+          }
+      }
+    
+    return reg;
+  } 
+
 namespace ArmISA
 {
 
@@ -76,12 +119,12 @@ class ArmStaticInst : public StaticInst
                        ArmShiftType type, uint8_t width) const;
     int64_t extendReg64(uint64_t base, ArmExtendType type,
                         uint64_t shiftAmt, uint8_t width) const;
-
+  
     template<int width>
     static inline bool
     saturateOp(int32_t &res, int64_t op1, int64_t op2, bool sub=false)
     {
-        int64_t midRes = sub ? (op1 - op2) : (op1 + op2);
+      int64_t midRes = sub ? obgem_error_inject_nonobj(op1 - op2, op1, op2, 0, 0) : obgem_error_inject_nonobj(op1 + op2, op1, op2, 0, 0);
         if (bits(midRes, width) != bits(midRes, width - 1)) {
             if (midRes > 0)
                 res = (LL(1) << (width - 1)) - 1;
@@ -114,7 +157,7 @@ class ArmStaticInst : public StaticInst
     static inline bool
     uSaturateOp(uint32_t &res, int64_t op1, int64_t op2, bool sub=false)
     {
-        int64_t midRes = sub ? (op1 - op2) : (op1 + op2);
+      int64_t midRes = sub ? obgem_error_inject_nonobj(op1 - op2, op1, op2, 0, 0) : obgem_error_inject_nonobj(op1 + op2, op1, op2, 0, 0);
         if (midRes >= (LL(1) << width)) {
             res = (LL(1) << width) - 1;
             return true;
@@ -512,6 +555,50 @@ class ArmStaticInst : public StaticInst
     {
         return simpleAsBytes(buf, max_size, machInst);
     }
+
+  inline uint64_t obgem_error_inject(uint64_t result, uint64_t op1, uint64_t op2, uint64_t flags, uint64_t is_mult) const
+  {
+    uint64_t reg = result;
+    
+    if(is_mult == 1)
+      {
+        if(mult_lock == 1)
+          {
+            if(alu_obfuscation_mode)
+              {
+                if(mult_err_rate > (rand() % alu_err_rate_denom))
+                  reg = reg ^ mult_err_severity;
+              }
+            else
+              {
+                if(op1 == mult_locked_op1 && op2 == mult_locked_op2 && flags == mult_locked_flags)
+                  reg = mult_locked_out;
+              }
+          }
+      }
+    else
+      {
+        if(adder_lock == 1)
+          {
+            if(alu_obfuscation_mode)
+              {
+                if(adder_err_rate > (rand() % alu_err_rate_denom))
+                  reg = reg ^ adder_err_severity;
+              }
+            else
+              {
+                if(((op1 & adder_locked_op1_mask) == (adder_locked_op1 & adder_locked_op1_mask)) && ((op2 & adder_locked_op2_mask) == (adder_locked_op2 & adder_locked_op2_mask)) && ((flags & adder_locked_flags_mask) == (adder_locked_flags & adder_locked_flags_mask)))
+                //if(op1 == adder_locked_op1 && op2 == adder_locked_op2 && flags == adder_locked_flags)
+                //if((op1 & (uint64_t)0x3ff) == (adder_locked_op1 & (uint64_t)0x3ff))
+                  reg = adder_locked_out;
+              }
+          }
+      }
+    
+    return reg;
+  }
+  
+  
 };
 }
 

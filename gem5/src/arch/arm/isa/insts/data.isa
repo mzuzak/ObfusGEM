@@ -282,10 +282,10 @@ let {{
 
     buildDataInst("and", "Dest = resTemp = Op1 & secondOp;")
     buildDataInst("eor", "Dest = resTemp = Op1 ^ secondOp;")
-    buildDataInst("sub", "Dest = resTemp = Op1 - secondOp;", "sub",
+    buildDataInst("sub", "Dest = resTemp = obgem_error_inject(Op1 - secondOp, Op1, secondOp, 0, 0);", "sub",
                   isBranch = "dest == INTREG_PC")
-    buildDataInst("rsb", "Dest = resTemp = secondOp - Op1;", "rsb")
-    buildDataInst("add", "Dest = resTemp = Op1 + secondOp;", "add",
+    buildDataInst("rsb", "Dest = resTemp = obgem_error_inject(secondOp - Op1, secondOp, Op1, 0, 0);", "rsb")
+    buildDataInst("add", "Dest = resTemp = obgem_error_inject(Op1 + secondOp, Op1, secondOp, 0, 0);", "add",
                   isBranch = "dest == INTREG_PC")
     buildImmDataInst("adr", '''
                                Dest = resTemp = (PC & ~0x3) +
@@ -296,8 +296,8 @@ let {{
     buildDataInst("rsc", "Dest = resTemp = secondOp - Op1 - !%s;" % oldC, "rsb")
     buildDataInst("tst", "resTemp = Op1 & secondOp;", aiw = False)
     buildDataInst("teq", "resTemp = Op1 ^ secondOp;", aiw = False)
-    buildDataInst("cmp", "resTemp = Op1 - secondOp;", "sub", aiw = False)
-    buildDataInst("cmn", "resTemp = Op1 + secondOp;", "add", aiw = False)
+    buildDataInst("cmp", "resTemp = obgem_error_inject(Op1 - secondOp, Op1, secondOp, 0, 0);", "sub", aiw = False)
+    buildDataInst("cmn", "resTemp = obgem_error_inject(Op1 + secondOp, Op1, secondOp, 0, 0);", "add", aiw = False)
     buildDataInst("orr", "Dest = resTemp = Op1 | secondOp;")
     buildDataInst("orn", "Dest = resTemp = Op1 | ~secondOp;", aiw = False)
     buildDataInst("mov", "Dest = resTemp = secondOp;", regRegAiw = False,
