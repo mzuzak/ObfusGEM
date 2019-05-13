@@ -37,6 +37,10 @@ for bm in "${benchmarks[@]}"; do
     # Remove stale checkpoints
     rm -rf ./tracediff-1/cpt.* 2> /dev/null
     rm -rf ./tracediff-2/cpt.* 2> /dev/null
+
+    # Make tracediff directories if necessary
+    mkdir tracediff-1
+    mkdir tracediff-2
     
     # Copy off checkpoints
     cp -r ./m5out/cpt.* ./tracediff-1/ 2> /dev/null
