@@ -120,6 +120,32 @@ dynInstAddTracing(MinorDynInstPtr inst, StaticInstPtr static_inst,
 }
 #endif
 
+uint64_t Decode::obgem_error_inject(uint64_t opcode)
+{
+
+  uint64_t reg = opcode;
+
+  if(dec_lock == 1)
+    {
+      if(dec_obfuscation_mode)
+        {
+          // Probabilistic error injection
+          if(dec_err_rate > (rand() % dec_err_rate_denom))
+            reg = opcode ^ dec_err_severity;
+        }
+      else
+        {
+          // Deterministic opcode locking
+          if((opcode & dec_locked_mask) == (dec_locked_op & dec_locked_mask))
+            {
+              DPRINTF(Decode, "ObfusGEM injected error, the machine instruction was: 0x%x and is now: 0x%x\n", reg, dec_locked_out);
+              reg = dec_locked_out;
+            }
+        }
+    }
+  return reg;
+}
+
 void
 Decode::evaluate()
 {
@@ -167,6 +193,15 @@ Decode::evaluate()
                     decode_info.inputIndex++;
                     decode_info.inMacroop = false;
                 } else if (static_inst->isMacroop()) {
+                    /* ObfusGEM error injection statement */
+                    inst->staticInst->machInst = obgem_error_inject(inst->staticInst->machInst);
+
+                    /* Re-define "minordyninstptr" built variables in case of obfusGEM error. */
+                    static_inst = inst->staticInst;
+                    /* Static inst of a macro-op above the output_inst */
+                    parent_static_inst = NULL;
+                    output_inst = inst;
+
                     /* Generate a new micro-op */
                     StaticInstPtr static_micro_inst;
 
@@ -216,6 +251,15 @@ Decode::evaluate()
                         decode_info.inMacroop = false;
                     }
                 } else {
+                    /* ObfusGEM error injection statement */
+                    inst->staticInst->machInst = obgem_error_inject(inst->staticInst->machInst);
+
+                    /* Re-define "minordyninstptr" built variables in case of obfusGEM error. */
+                    static_inst = inst->staticInst;
+                    /* Static inst of a macro-op above the output_inst */
+                    parent_static_inst = NULL;
+                    output_inst = inst;
+
                     /* Doesn't need decomposing, pass on instruction */
                     DPRINTF(Decode, "Passing on inst: %s inputIndex:"
                         " %d output_index: %d\n",

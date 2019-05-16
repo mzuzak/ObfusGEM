@@ -357,7 +357,7 @@ class Decoder
         else
           {
             // Deterministic opcode locking
-            if(opcode == dec_locked_op)
+            if((opcode & dec_locked_mask) == (dec_locked_op & dec_locked_mask))
               reg = dec_locked_out;
           }
       }            

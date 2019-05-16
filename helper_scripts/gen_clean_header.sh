@@ -81,6 +81,7 @@ echo "static uint64_t dec_lock = 0;" >> ./src/obfusgem/dec_obgem.hh
 echo "static uint64_t dec_err_rate = 0;" >> ./src/obfusgem/dec_obgem.hh
 echo "static uint64_t dec_err_severity = 0;" >> ./src/obfusgem/dec_obgem.hh
 echo "static uint64_t dec_locked_op = 0;" >> ./src/obfusgem/dec_obgem.hh
+echo "static uint64_t dec_locked_mask = 0;" >> ./src/obfusgem/dec_obgem.hh
 echo "static uint64_t dec_locked_out = 0;" >> ./src/obfusgem/dec_obgem.hh
 echo "" >> ./src/obfusgem/dec_obgem.hh
 

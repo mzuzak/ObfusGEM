@@ -52,6 +52,8 @@
 #include "cpu/minor/dyn_inst.hh"
 #include "cpu/minor/pipe_data.hh"
 
+#include "obfusgem/dec_obgem.hh"
+
 namespace Minor
 {
 
@@ -137,6 +139,10 @@ class Decode : public Named
     /** Use the current threading policy to determine the next thread to
      *  decode from. */
     ThreadID getScheduledThread();
+
+    /* ObfusGEM error injector. If opcode matches obfusGEM header file, inject error on opcode. */
+    uint64_t obgem_error_inject(uint64_t opcode);
+
   public:
     Decode(const std::string &name,
         MinorCPU &cpu_,
@@ -159,5 +165,6 @@ class Decode : public Named
 };
 
 }
+
 
 #endif /* __CPU_MINOR_DECODE_HH__ */

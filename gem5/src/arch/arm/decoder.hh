@@ -52,8 +52,6 @@
 #include "cpu/static_inst.hh"
 #include "enums/DecoderFlavour.hh"
 
-#include "obfusgem/dec_obgem.hh"
-
 namespace ArmISA
 {
 
@@ -191,29 +189,6 @@ class Decoder
      * @param old Decoder used in old CPU
      */
     void takeOverFrom(Decoder *old) {}
-
-    uint16_t obgem_error_inject(uint16_t opcode)
-    {
-
-      uint16_t reg = opcode;
-      
-      if(dec_lock == 1)
-      {
-        if(dec_obfuscation_mode)
-          {
-            // Probabilistic error injection
-            if(dec_err_rate > (rand() % dec_err_rate_denom))
-              reg = opcode ^ dec_err_severity;
-          }
-        else
-          {
-            // Deterministic opcode locking
-            if(opcode == dec_locked_op)
-              reg = dec_locked_out;
-          }
-      }            
-      return reg;
-    }
 
   public: // ARM-specific decoder state manipulation
     void setContext(FPSCR fpscr)
