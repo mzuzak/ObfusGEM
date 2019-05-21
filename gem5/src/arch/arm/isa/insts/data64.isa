@@ -179,43 +179,43 @@ let {{
         decoder_output += eval(templateBase + "Constructor").subst(iop)
         exec_output += BasicExecute.subst(iop)
 
-    buildDataXRegInst("madd", 3, "Dest64 = Op164 + Op264 * Op364",
+    buildDataXRegInst("madd", 3, "Dest64 = Op164 + obgem_error_inject(Op264 * Op364, Op264, Op364, 0, 1)",
         overrideOpClass="IntMultOp")
-    buildDataXRegInst("msub", 3, "Dest64 = Op164 - Op264 * Op364",
+    buildDataXRegInst("msub", 3, "Dest64 = Op164 - obgem_error_inject(Op264 * Op364, Op264, Op364, 0, 1)",
         overrideOpClass="IntMultOp")
     buildDataXRegInst("smaddl", 3,
-        "XDest = XOp1 + sext<32>(WOp2) * sext<32>(WOp3)",
+        "XDest = XOp1 + obgem_error_inject(sext<32>(WOp2) * sext<32>(WOp3), sext<32>(WOp2), sext<32>(WOp3), 0, 1)",
         overrideOpClass="IntMultOp")
     buildDataXRegInst("smsubl", 3,
-        "XDest = XOp1 - sext<32>(WOp2) * sext<32>(WOp3)",
+        "XDest = XOp1 - obgem_error_inject(sext<32>(WOp2) * sext<32>(WOp3), sext<32>(WOp2), sext<32>(WOp3), 0, 1)",
         overrideOpClass="IntMultOp")
     buildDataXRegInst("smulh", 2, '''
         uint64_t op1H = (int32_t)(XOp1 >> 32);
         uint64_t op1L = (uint32_t)XOp1;
         uint64_t op2H = (int32_t)(XOp2 >> 32);
         uint64_t op2L = (uint32_t)XOp2;
-        uint64_t mid1 = ((op1L * op2L) >> 32) + op1H * op2L;
-        uint64_t mid2 = op1L * op2H;
+        uint64_t mid1 = ((obgem_error_inject(op1L * op2L, op1L, op2L, 0, 1)) >> 32) + obgem_error_inject(op1H * op2L, op1H, op2L, 0, 1);
+        uint64_t mid2 = obgem_error_inject(op1L * op2H, op1L, op2H, 0, 1);
         uint64_t result = ((uint64_t)(uint32_t)mid1 + (uint32_t)mid2) >> 32;
         result += shiftReg64(mid1, 32, ASR, intWidth);
         result += shiftReg64(mid2, 32, ASR, intWidth);
-        XDest = result + op1H * op2H;
+        XDest = result + obgem_error_inject(op1H * op2H, op1H, op2H, 0, 1);
     ''', overrideOpClass="IntMultOp")
-    buildDataXRegInst("umaddl", 3, "XDest = XOp1 + WOp2 * WOp3",
+    buildDataXRegInst("umaddl", 3, "XDest = XOp1 + obgem_error_inject(WOp2 * WOp3, WOp2, WOp3, 0, 1)",
         overrideOpClass="IntMultOp")
-    buildDataXRegInst("umsubl", 3, "XDest = XOp1 - WOp2 * WOp3",
+    buildDataXRegInst("umsubl", 3, "XDest = XOp1 - obgem_error_inject(WOp2 * WOp3, WOp2, WOp3, 0, 1)",
         overrideOpClass="IntMultOp")
     buildDataXRegInst("umulh", 2, '''
         uint64_t op1H = (uint32_t)(XOp1 >> 32);
         uint64_t op1L = (uint32_t)XOp1;
         uint64_t op2H = (uint32_t)(XOp2 >> 32);
         uint64_t op2L = (uint32_t)XOp2;
-        uint64_t mid1 = ((op1L * op2L) >> 32) + op1H * op2L;
-        uint64_t mid2 = op1L * op2H;
+        uint64_t mid1 = ((obgem_error_inject(op1L * op2L, op1L, op2L, 0, 1)) >> 32) + op1H * op2L;
+        uint64_t mid2 = obgem_error_inject(op1L * op2H, op1L, op2H, 0, 1);
         uint64_t result = ((uint64_t)(uint32_t)mid1 + (uint32_t)mid2) >> 32;
         result += mid1 >> 32;
         result += mid2 >> 32;
-        XDest = result + op1H * op2H;
+        XDest = result + obgem_error_inject(op1H * op2H, op1H, op2H, 0, 1);
     ''', overrideOpClass="IntMultOp")
 
     buildDataXRegInst("asrv", 2,

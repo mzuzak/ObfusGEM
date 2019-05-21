@@ -134,151 +134,151 @@ let {{
     buildMult4InstUnCc("mls", "Reg0 = resTemp = Reg3 - Reg1 * Reg2;")
     buildMult3Inst    ("mul", "Reg0 = resTemp = obgem_error_inject(Reg1 * Reg2, Reg1, Reg2, 0, 1);")
     buildMult4InstCc  ("smlabb", '''Reg0 = resTemp =
-                                        sext<16>(bits(Reg1, 15, 0)) *
-                                        sext<16>(bits(Reg2_sw, 15, 0)) +
+                                        obgem_error_inject(sext<16>(bits(Reg1, 15, 0)) *
+                                        sext<16>(bits(Reg2_sw, 15, 0)), sext<16>(bits(Reg1, 15, 0)), sext<16>(bits(Reg2_sw, 15, 0)), 0, 1) +
                                         Reg3_sw;
                                  resTemp = bits(resTemp, 32) !=
                                            bits(resTemp, 31);
                                  ''', "overflow")
     buildMult4InstCc  ("smlabt", '''Reg0 = resTemp =
-                                        sext<16>(bits(Reg1, 15, 0)) *
-                                        sext<16>(bits(Reg2_sw, 31, 16)) +
+                                        obgem_error_inject(sext<16>(bits(Reg1, 15, 0)) *
+                                        sext<16>(bits(Reg2_sw, 31, 16)), sext<16>(bits(Reg1, 15, 0)), sext<16>(bits(Reg2_sw, 31, 16)), 0, 1) +
                                         Reg3_sw;
                                  resTemp = bits(resTemp, 32) !=
                                            bits(resTemp, 31);
                                  ''', "overflow")
     buildMult4InstCc  ("smlatb", '''Reg0 = resTemp =
-                                        sext<16>(bits(Reg1, 31, 16)) *
-                                        sext<16>(bits(Reg2_sw, 15, 0)) +
+                                        obgem_error_inject(sext<16>(bits(Reg1, 31, 16)) *
+                                        sext<16>(bits(Reg2_sw, 15, 0)), sext<16>(bits(Reg1, 31, 16)), sext<16>(bits(Reg2_sw, 15, 0)), 0, 1) +
                                         Reg3_sw;
                                  resTemp = bits(resTemp, 32) !=
                                            bits(resTemp, 31);
                                  ''', "overflow")
     buildMult4InstCc  ("smlatt", '''Reg0 = resTemp =
-                                        sext<16>(bits(Reg1, 31, 16)) *
-                                        sext<16>(bits(Reg2_sw, 31, 16)) +
+                                        obgem_error_inject(sext<16>(bits(Reg1, 31, 16)) *
+                                        sext<16>(bits(Reg2_sw, 31, 16)), sext<16>(bits(Reg1, 31, 16)), sext<16>(bits(Reg2_sw, 31, 16)), 0, 1) +
                                         Reg3_sw;
                                  resTemp = bits(resTemp, 32) !=
                                            bits(resTemp, 31);
                                  ''', "overflow")
     buildMult4InstCc  ("smlad", '''Reg0 = resTemp =
-                                        sext<16>(bits(Reg1, 31, 16)) *
-                                        sext<16>(bits(Reg2, 31, 16)) +
-                                        sext<16>(bits(Reg1, 15, 0)) *
-                                        sext<16>(bits(Reg2, 15, 0)) +
+                                        obgem_error_inject(sext<16>(bits(Reg1, 31, 16)) *
+                                        sext<16>(bits(Reg2, 31, 16)), sext<16>(bits(Reg1, 31, 16)), sext<16>(bits(Reg2, 31, 16)), 0, 1) +
+                                        obgem_error_inject(sext<16>(bits(Reg1, 15, 0)) *
+                                        sext<16>(bits(Reg2, 15, 0)), sext<16>(bits(Reg1, 15, 0)), sext<16>(bits(Reg2, 15, 0)), 0, 1) +
                                         Reg3_sw;
                                     resTemp = bits(resTemp, 32) !=
                                               bits(resTemp, 31);
                                 ''', "overflow")
     buildMult4InstCc  ("smladx", '''Reg0 = resTemp =
-                                         sext<16>(bits(Reg1, 31, 16)) *
-                                         sext<16>(bits(Reg2, 15, 0)) +
-                                         sext<16>(bits(Reg1, 15, 0)) *
-                                         sext<16>(bits(Reg2, 31, 16)) +
+                                         obgem_error_inject(sext<16>(bits(Reg1, 31, 16)) *
+                                         sext<16>(bits(Reg2, 15, 0)), sext<16>(bits(Reg1, 31, 16)), sext<16>(bits(Reg2, 15, 0)), 0, 1) +
+                                         obgem_error_inject(sext<16>(bits(Reg1, 15, 0)) *
+                                         sext<16>(bits(Reg2, 31, 16)), sext<16>(bits(Reg1, 15, 0)), sext<16>(bits(Reg2, 31, 16)), 0, 1) +
                                          Reg3_sw;
                                     resTemp = bits(resTemp, 32) !=
                                               bits(resTemp, 31);
                                  ''', "overflow")
-    buildMult4Inst    ("smlal", '''resTemp = sext<32>(Reg2) * sext<32>(Reg3) +
+    buildMult4Inst    ("smlal", '''resTemp = obgem_error_inject(sext<32>(Reg2) * sext<32>(Reg3), sext<32>(Reg2), sext<32>(Reg3), 0, 1) +
                                        (int64_t)((Reg1_ud << 32) | Reg0_ud);
                                    Reg0_ud = (uint32_t)resTemp;
                                    Reg1_ud = (uint32_t)(resTemp >> 32);
                                 ''', "llbit")
-    buildMult4InstUnCc("smlalbb", '''resTemp = sext<16>(bits(Reg2, 15, 0)) *
-                                               sext<16>(bits(Reg3, 15, 0)) +
+    buildMult4InstUnCc("smlalbb", '''resTemp = obgem_error_inject(sext<16>(bits(Reg2, 15, 0)) *
+                                               sext<16>(bits(Reg3, 15, 0)), sext<16>(bits(Reg2, 15, 0)), sext<16>(bits(Reg3, 15, 0)), 0, 1) +
                                                (int64_t)((Reg1_ud << 32) |
                                                          Reg0_ud);
                                      Reg0_ud = (uint32_t)resTemp;
                                      Reg1_ud = (uint32_t)(resTemp >> 32);
                                   ''')
-    buildMult4InstUnCc("smlalbt", '''resTemp = sext<16>(bits(Reg2, 15, 0)) *
-                                               sext<16>(bits(Reg3, 31, 16)) +
+    buildMult4InstUnCc("smlalbt", '''resTemp = obgem_error_inject(sext<16>(bits(Reg2, 15, 0)) *
+                                               sext<16>(bits(Reg3, 31, 16)), sext<16>(bits(Reg2, 15, 0)), sext<16>(bits(Reg3, 31, 16)), 0, 1) +
                                                (int64_t)((Reg1_ud << 32) |
                                                          Reg0_ud);
                                      Reg0_ud = (uint32_t)resTemp;
                                      Reg1_ud = (uint32_t)(resTemp >> 32);
                                   ''')
-    buildMult4InstUnCc("smlaltb", '''resTemp = sext<16>(bits(Reg2, 31, 16)) *
-                                               sext<16>(bits(Reg3, 15, 0)) +
+    buildMult4InstUnCc("smlaltb", '''resTemp = obgem_error_inject(sext<16>(bits(Reg2, 31, 16)) *
+                                               sext<16>(bits(Reg3, 15, 0)), sext<16>(bits(Reg2, 31, 16)), sext<16>(bits(Reg3, 15, 0)), 0, 1) +
                                                (int64_t)((Reg1_ud << 32) |
                                                          Reg0_ud);
                                      Reg0_ud = (uint32_t)resTemp;
                                      Reg1_ud = (uint32_t)(resTemp >> 32);
                                   ''')
-    buildMult4InstUnCc("smlaltt", '''resTemp = sext<16>(bits(Reg2, 31, 16)) *
-                                               sext<16>(bits(Reg3, 31, 16)) +
+    buildMult4InstUnCc("smlaltt", '''resTemp = obgem_error_inject(sext<16>(bits(Reg2, 31, 16)) *
+                                               sext<16>(bits(Reg3, 31, 16)), sext<16>(bits(Reg2, 31, 16)), sext<16>(bits(Reg3, 31, 16)), 0, 1) +
                                                (int64_t)((Reg1_ud << 32) |
                                                          Reg0_ud);
                                      Reg0_ud = (uint32_t)resTemp;
                                      Reg1_ud = (uint32_t)(resTemp >> 32);
                                   ''')
     buildMult4InstUnCc("smlald", '''resTemp =
-                                        sext<16>(bits(Reg2, 31, 16)) *
-                                        sext<16>(bits(Reg3, 31, 16)) +
-                                        sext<16>(bits(Reg2, 15, 0)) *
-                                        sext<16>(bits(Reg3, 15, 0)) +
+                                        obgem_error_inject(sext<16>(bits(Reg2, 31, 16)) *
+                                        sext<16>(bits(Reg3, 31, 16)), sext<16>(bits(Reg2, 31, 16)), sext<16>(bits(Reg3, 31, 16)), 0, 1) +
+                                        obgem_error_inject(sext<16>(bits(Reg2, 15, 0)) *
+                                        sext<16>(bits(Reg3, 15, 0)), sext<16>(bits(Reg2, 15, 0)), sext<16>(bits(Reg3, 15, 0)), 0, 1) +
                                         (int64_t)((Reg1_ud << 32) |
                                                   Reg0_ud);
                                     Reg0_ud = (uint32_t)resTemp;
                                     Reg1_ud = (uint32_t)(resTemp >> 32);
                                  ''')
     buildMult4InstUnCc("smlaldx", '''resTemp =
-                                         sext<16>(bits(Reg2, 31, 16)) *
-                                         sext<16>(bits(Reg3, 15, 0)) +
-                                         sext<16>(bits(Reg2, 15, 0)) *
-                                         sext<16>(bits(Reg3, 31, 16)) +
+                                         obgem_error_inject(sext<16>(bits(Reg2, 31, 16)) *
+                                         sext<16>(bits(Reg3, 15, 0)), sext<16>(bits(Reg2, 31, 16)), sext<16>(bits(Reg3, 15, 0)), 0, 1) +
+                                         obgem_error_inject(sext<16>(bits(Reg2, 15, 0)) *
+                                         sext<16>(bits(Reg3, 31, 16)), sext<16>(bits(Reg2, 15, 0)), sext<16>(bits(Reg3, 31, 16)), 0, 1) +
                                          (int64_t)((Reg1_ud << 32) |
                                                    Reg0_ud);
                                      Reg0_ud = (uint32_t)resTemp;
                                      Reg1_ud = (uint32_t)(resTemp >> 32);
                                   ''')
     buildMult4InstCc  ("smlawb", '''Reg0 = resTemp =
-                                        (Reg1_sw *
-                                         sext<16>(bits(Reg2, 15, 0)) +
+                                        (obgem_error_inject(Reg1_sw *
+                                         sext<16>(bits(Reg2, 15, 0)), Reg1_sw, sext<16>(bits(Reg2, 15, 0)), 0, 1) +
                                          ((int64_t)Reg3_sw << 16)) >> 16;
                                     resTemp = bits(resTemp, 32) !=
                                               bits(resTemp, 31);
                                  ''', "overflow")
     buildMult4InstCc  ("smlawt", '''Reg0 = resTemp =
-                                        (Reg1_sw *
-                                         sext<16>(bits(Reg2, 31, 16)) +
+                                        (obgem_error_inject(Reg1_sw *
+                                         sext<16>(bits(Reg2, 31, 16)), Reg1_sw, sext<16>(bits(Reg2, 31, 16)), 0, 1) +
                                          ((int64_t)Reg3_sw << 16)) >> 16;
                                     resTemp = bits(resTemp, 32) !=
                                               bits(resTemp, 31);
                                  ''', "overflow")
     buildMult4InstCc  ("smlsd", '''Reg0 = resTemp =
-                                       sext<16>(bits(Reg1, 15, 0)) *
-                                       sext<16>(bits(Reg2, 15, 0)) -
-                                       sext<16>(bits(Reg1, 31, 16)) *
-                                       sext<16>(bits(Reg2, 31, 16)) +
+                                       obgem_error_inject(sext<16>(bits(Reg1, 15, 0)) *
+                                       sext<16>(bits(Reg2, 15, 0)), sext<16>(bits(Reg1, 15, 0)), sext<16>(bits(Reg2, 15, 0)), 0, 1) -
+                                       obgem_error_inject(sext<16>(bits(Reg1, 31, 16)) *
+                                       sext<16>(bits(Reg2, 31, 16)), sext<16>(bits(Reg1, 31, 16)), sext<16>(bits(Reg2, 31, 16)), 0, 1) +
                                        Reg3_sw;
                                     resTemp = bits(resTemp, 32) !=
                                               bits(resTemp, 31);
                                 ''', "overflow")
     buildMult4InstCc  ("smlsdx", '''Reg0 = resTemp =
-                                        sext<16>(bits(Reg1, 15, 0)) *
-                                        sext<16>(bits(Reg2, 31, 16)) -
-                                        sext<16>(bits(Reg1, 31, 16)) *
-                                        sext<16>(bits(Reg2, 15, 0)) +
+                                        obgem_error_inject(sext<16>(bits(Reg1, 15, 0)) *
+                                        sext<16>(bits(Reg2, 31, 16)), sext<16>(bits(Reg1, 15, 0)), sext<16>(bits(Reg2, 31, 16)), 0, 1) -
+                                        obgem_error_inject(sext<16>(bits(Reg1, 31, 16)) *
+                                        sext<16>(bits(Reg2, 15, 0)), sext<16>(bits(Reg1, 31, 16)), sext<16>(bits(Reg2, 15, 0)), 0, 1) +
                                         Reg3_sw;
                                     resTemp = bits(resTemp, 32) !=
                                               bits(resTemp, 31);
                                  ''', "overflow")
     buildMult4InstUnCc("smlsld", '''resTemp =
-                                        sext<16>(bits(Reg2, 15, 0)) *
-                                        sext<16>(bits(Reg3, 15, 0)) -
-                                        sext<16>(bits(Reg2, 31, 16)) *
-                                        sext<16>(bits(Reg3, 31, 16)) +
+                                        obgem_error_inject(sext<16>(bits(Reg2, 15, 0)) *
+                                        sext<16>(bits(Reg3, 15, 0)), sext<16>(bits(Reg2, 15, 0)), sext<16>(bits(Reg3, 15, 0)), 0, 1) -
+                                        obgem_error_inject(sext<16>(bits(Reg2, 31, 16)) *
+                                        sext<16>(bits(Reg3, 31, 16)), sext<16>(bits(Reg2, 31, 16)), sext<16>(bits(Reg3, 31, 16)), 0, 1) +
                                         (int64_t)((Reg1_ud << 32) |
                                                   Reg0_ud);
                                     Reg0_ud = (uint32_t)resTemp;
                                     Reg1_ud = (uint32_t)(resTemp >> 32);
                                  ''')
     buildMult4InstUnCc("smlsldx", '''resTemp =
-                                         sext<16>(bits(Reg2, 15, 0)) *
-                                         sext<16>(bits(Reg3, 31, 16)) -
-                                         sext<16>(bits(Reg2, 31, 16)) *
-                                         sext<16>(bits(Reg3, 15, 0)) +
+                                         obgem_error_inject(sext<16>(bits(Reg2, 15, 0)) *
+                                         sext<16>(bits(Reg3, 31, 16)), sext<16>(bits(Reg2, 15, 0)), sext<16>(bits(Reg3, 31, 16)), 0, 1) -
+                                         obgem_error_inject(sext<16>(bits(Reg2, 31, 16)) *
+                                         sext<16>(bits(Reg3, 15, 0)), sext<16>(bits(Reg2, 31, 16)), sext<16>(bits(Reg3, 15, 0)), 0, 1) +
                                          (int64_t)((Reg1_ud << 32) |
                                                    Reg0_ud);
                                      Reg0_ud = (uint32_t)resTemp;
@@ -286,48 +286,48 @@ let {{
                                   ''')
     buildMult4InstUnCc("smmla", '''Reg0 = resTemp =
                                        ((int64_t)(Reg3_ud << 32) +
-                                        (int64_t)Reg1_sw *
-                                        (int64_t)Reg2_sw) >> 32;
+                                        obgem_error_inject((int64_t)Reg1_sw *
+                                        (int64_t)Reg2_sw, Reg1_sw, Reg2_sw, 0, 1)) >> 32;
                                 ''')
     buildMult4InstUnCc("smmlar", '''Reg0 = resTemp =
                                         ((int64_t)(Reg3_ud << 32) +
-                                         (int64_t)Reg1_sw *
-                                         (int64_t)Reg2_sw +
+                                         obgem_error_inject((int64_t)Reg1_sw *
+                                         (int64_t)Reg2_sw, Reg1_sw, Reg2_sw, 0, 1) +
                                          ULL(0x80000000)) >> 32;
                                  ''')
     buildMult4InstUnCc("smmls", '''Reg0 = resTemp =
                                        ((int64_t)(Reg3_ud << 32) -
-                                        (int64_t)Reg1_sw *
-                                        (int64_t)Reg2_sw) >> 32;
+                                        obgem_error_inject((int64_t)Reg1_sw *
+                                        (int64_t)Reg2_sw, Reg1_sw, Reg2_sw, 0, 1)) >> 32;
                                 ''')
     buildMult4InstUnCc("smmlsr", '''Reg0 = resTemp =
                                         ((int64_t)(Reg3_ud << 32) -
-                                         (int64_t)Reg1_sw *
-                                         (int64_t)Reg2_sw +
+                                         obgem_error_inject((int64_t)Reg1_sw *
+                                         (int64_t)Reg2_sw, Reg1_sw, Reg2_sw, 0, 1) +
                                          ULL(0x80000000)) >> 32;
                                  ''')
     buildMult3InstUnCc("smmul", '''Reg0 = resTemp =
-                                        ((int64_t)Reg1_sw *
-                                        (int64_t)Reg2_sw) >> 32;
+                                        (obgem_error_inject((int64_t)Reg1_sw *
+                                        (int64_t)Reg2_sw, Reg1_sw, Reg2_sw, 0, 1)) >> 32;
                                 ''')
     buildMult3InstUnCc("smmulr", '''Reg0 = resTemp =
-                                        ((int64_t)Reg1_sw *
-                                         (int64_t)Reg2_sw +
+                                        (obgem_error_inject((int64_t)Reg1_sw *
+                                         (int64_t)Reg2_sw, (int64_t)Reg1_sw, (int64_t)Reg2_sw, 0, 1) +
                                          ULL(0x80000000)) >> 32;
                                  ''')
     buildMult3InstCc  ("smuad", '''Reg0 = resTemp =
-                                        sext<16>(bits(Reg1, 15, 0)) *
-                                        sext<16>(bits(Reg2, 15, 0)) +
-                                        sext<16>(bits(Reg1, 31, 16)) *
-                                        sext<16>(bits(Reg2, 31, 16));
+                                        obgem_error_inject(sext<16>(bits(Reg1, 15, 0)) *
+                                        sext<16>(bits(Reg2, 15, 0)), sext<16>(bits(Reg1, 15, 0)), sext<16>(bits(Reg2, 15, 0)), 0, 1) +
+                                        obgem_error_inject(sext<16>(bits(Reg1, 31, 16)) *
+                                        sext<16>(bits(Reg2, 31, 16)), sext<16>(bits(Reg1, 31, 16)), sext<16>(bits(Reg2, 31, 16)), 0, 1);
                                     resTemp = bits(resTemp, 32) !=
                                               bits(resTemp, 31);
                                 ''', "overflow")
     buildMult3InstCc  ("smuadx", '''Reg0 = resTemp =
-                                        sext<16>(bits(Reg1, 15, 0)) *
-                                        sext<16>(bits(Reg2, 31, 16)) +
-                                        sext<16>(bits(Reg1, 31, 16)) *
-                                        sext<16>(bits(Reg2, 15, 0));
+                                        obgem_error_inject(sext<16>(bits(Reg1, 15, 0)) *
+                                        sext<16>(bits(Reg2, 31, 16)), sext<16>(bits(Reg1, 15, 0)), sext<16>(bits(Reg2, 31, 16)), 0, 1) +
+                                        obgem_error_inject(sext<16>(bits(Reg1, 31, 16)) *
+                                        sext<16>(bits(Reg2, 15, 0)), sext<16>(bits(Reg1, 31, 16)), sext<16>(bits(Reg2, 15, 0)), 0, 1);
                                     resTemp = bits(resTemp, 32) !=
                                               bits(resTemp, 31);
                                  ''', "overflow")
@@ -361,23 +361,23 @@ let {{
                                          sext<16>(bits(Reg2, 31, 16)), Reg1_sw, sext<16>(bits(Reg2, 31, 16)), 0, 1) >> 16;
                                  ''')
     buildMult3InstUnCc("smusd", '''Reg0 = resTemp =
-                                        sext<16>(bits(Reg1, 15, 0)) *
-                                        sext<16>(bits(Reg2, 15, 0)) -
-                                        sext<16>(bits(Reg1, 31, 16)) *
-                                        sext<16>(bits(Reg2, 31, 16));
+                                        obgem_error_inject(sext<16>(bits(Reg1, 15, 0)) *
+                                        sext<16>(bits(Reg2, 15, 0)), sext<16>(bits(Reg1, 15, 0)),  sext<16>(bits(Reg2, 15, 0)), 0, 1) -
+                                        obgem_error_inject(sext<16>(bits(Reg1, 31, 16)) *
+                                        sext<16>(bits(Reg2, 31, 16)), sext<16>(bits(Reg1, 31, 16)), sext<16>(bits(Reg2, 31, 16)), 0, 1);
                                 ''')
     buildMult3InstUnCc("smusdx", '''Reg0 = resTemp =
-                                        sext<16>(bits(Reg1, 15, 0)) *
-                                        sext<16>(bits(Reg2, 31, 16)) -
-                                        sext<16>(bits(Reg1, 31, 16)) *
-                                        sext<16>(bits(Reg2, 15, 0));
+                                        obgem_error_inject(sext<16>(bits(Reg1, 15, 0)) *
+                                        sext<16>(bits(Reg2, 31, 16)), sext<16>(bits(Reg1, 15, 0)), sext<16>(bits(Reg2, 31, 16)), 0, 1) -
+                                        obgem_error_inject(sext<16>(bits(Reg1, 31, 16)) *
+                                        sext<16>(bits(Reg2, 15, 0)), sext<16>(bits(Reg1, 31, 16)), sext<16>(bits(Reg2, 15, 0)), 0, 1);
                                  ''')
-    buildMult4InstUnCc("umaal", '''resTemp = Reg2_ud * Reg3_ud +
+    buildMult4InstUnCc("umaal", '''resTemp = obgem_error_inject(Reg2_ud * Reg3_ud, Reg2_ud, Reg3_ud, 0, 1) +
                                              Reg0_ud + Reg1_ud;
                                    Reg1_ud = (uint32_t)(resTemp >> 32);
                                    Reg0_ud = (uint32_t)resTemp;
                                 ''')
-    buildMult4Inst    ("umlal", '''resTemp = Reg2_ud * Reg3_ud + Reg0_ud +
+    buildMult4Inst    ("umlal", '''resTemp = obgem_error_inject(Reg2_ud * Reg3_ud, Reg2_ud, Reg3_ud, 0, 1) + Reg0_ud +
                                              (Reg1_ud << 32);
                                    Reg1_ud = (uint32_t)(resTemp >> 32);
                                    Reg0_ud = (uint32_t)resTemp;
