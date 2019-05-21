@@ -211,7 +211,7 @@ class StaticInst : public RefCounted, public StaticInstFlags
     static StaticInstPtr nopStaticInstPtr;
 
     /// The binary machine instruction.
-    const ExtMachInst machInst;
+    ExtMachInst machInst;
 
   protected:
 
