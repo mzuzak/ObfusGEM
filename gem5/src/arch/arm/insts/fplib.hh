@@ -53,6 +53,90 @@
 
 #include "arch/arm/miscregs.hh"
 
+#include "obfusgem/fpu_obgem.hh"
+
+inline uint64_t obgem_error_inject_fpu(uint64_t result, uint64_t op1, uint64_t op2, uint64_t flags, uint64_t is_mult)
+  {
+    uint64_t reg = result;
+    
+    if(is_mult == 1)
+      {
+        if(fpu_mult_lock == 1)
+          {
+            if(fpu_obfuscation_mode)
+              {
+                if(fpu_mult_err_rate > (rand() % fpu_err_rate_denom))
+                  reg = reg ^ fpu_mult_err_severity;
+              }
+            else
+              {
+                if(((op1 & fpu_mult_locked_op1_mask) == (fpu_mult_locked_op1 & fpu_mult_locked_op1_mask)) && ((op2 & fpu_mult_locked_op2_mask) == (fpu_mult_locked_op2 & fpu_mult_locked_op2_mask)) && ((flags & fpu_mult_locked_flags_mask) == (fpu_mult_locked_flags & fpu_mult_locked_flags_mask)))
+                  reg = fpu_mult_locked_out;
+              }
+          }
+      }
+    else
+      {
+        if(fpu_adder_lock == 1)
+          {
+            if(fpu_obfuscation_mode)
+              {
+                if(fpu_adder_err_rate > (rand() % fpu_err_rate_denom))
+                  reg = reg ^ fpu_adder_err_severity;
+              }
+            else
+              {
+                if(((op1 & fpu_adder_locked_op1_mask) == (fpu_adder_locked_op1 & fpu_adder_locked_op1_mask)) && ((op2 & fpu_adder_locked_op2_mask) == (fpu_adder_locked_op2 & fpu_adder_locked_op2_mask)) && ((flags & fpu_adder_locked_flags_mask) == (fpu_adder_locked_flags & fpu_adder_locked_flags_mask)))
+                  reg = fpu_adder_locked_out;
+              }
+          }
+      }
+    
+    return reg;
+  }
+
+inline uint64_t obgem_is_error_fpu(uint64_t op1, uint64_t op2, uint64_t flags, uint64_t is_mult)
+  {
+
+    uint64_t reg = 0;
+    
+    if(is_mult == 1)
+      {
+        if(fpu_mult_lock == 1)
+          {
+            if(fpu_obfuscation_mode)
+              {
+                if(fpu_mult_err_rate > (rand() % fpu_err_rate_denom))
+                  reg = 1;
+              }
+            else
+              {
+                if(((op1 & fpu_mult_locked_op1_mask) == (fpu_mult_locked_op1 & fpu_mult_locked_op1_mask)) && ((op2 & fpu_mult_locked_op2_mask) == (fpu_mult_locked_op2 & fpu_mult_locked_op2_mask)) && ((flags & fpu_mult_locked_flags_mask) == (fpu_mult_locked_flags & fpu_mult_locked_flags_mask)))
+                  reg = 1;
+              }
+          }
+      }
+    else
+      {
+        if(fpu_adder_lock == 1)
+          {
+            if(fpu_obfuscation_mode)
+              {
+                if(fpu_adder_err_rate > (rand() % fpu_err_rate_denom))
+                  reg = 1;
+              }
+            else
+              {
+                if(((op1 & fpu_adder_locked_op1_mask) == (fpu_adder_locked_op1 & fpu_adder_locked_op1_mask)) && ((op2 & fpu_adder_locked_op2_mask) == (fpu_adder_locked_op2 & fpu_adder_locked_op2_mask)) && ((flags & fpu_adder_locked_flags_mask) == (fpu_adder_locked_flags & fpu_adder_locked_flags_mask)))
+                  reg = 1;
+              }
+          }
+      }
+    
+    return reg;
+  } 
+
+
 namespace ArmISA
 {
 

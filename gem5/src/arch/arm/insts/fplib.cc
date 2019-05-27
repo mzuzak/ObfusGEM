@@ -142,8 +142,8 @@ mul62x62(uint64_t *x0, uint64_t *x1, uint64_t a, uint64_t b)
     uint64_t a1 = a >> 31 & mask;
     uint64_t b0 = b & mask;
     uint64_t b1 = b >> 31 & mask;
-    uint64_t p0 = a0 * b0;
-    uint64_t p2 = a1 * b1;
+    uint64_t p0 = obgem_error_inject_fpu(a0 * b0, a0, b0, 0, 1);
+    uint64_t p2 = obgem_error_inject_fpu(a1 * b1, a1, b1, 0, 1);
     uint64_t p1 = (a0 + a1) * (b0 + b1) - p0 - p2;
     uint64_t s0 = p0;
     uint64_t s1 = (s0 >> 31) + p1;
@@ -155,8 +155,8 @@ mul62x62(uint64_t *x0, uint64_t *x1, uint64_t a, uint64_t b)
 static inline
 void mul64x32(uint64_t *x0, uint64_t *x1, uint64_t a, uint32_t b)
 {
-    uint64_t t0 = (uint64_t)(uint32_t)a * b;
-    uint64_t t1 = (t0 >> 32) + (a >> 32) * b;
+    uint64_t t0 = obgem_error_inject_fpu((uint64_t)(uint32_t)a * b, (uint64_t)(uint32_t)a, b, 0, 1);
+    uint64_t t1 = (t0 >> 32) + obgem_error_inject_fpu((a >> 32) * b, (a >> 32), b, 0, 1);
     *x0 = t1 << 32 | (uint32_t)t0;
     *x1 = t1 >> 32;
 }
@@ -165,16 +165,16 @@ static inline void
 add128(uint64_t *x0, uint64_t *x1, uint64_t a0, uint64_t a1, uint64_t b0,
        uint64_t b1)
 {
-    *x0 = a0 + b0;
-    *x1 = a1 + b1 + (*x0 < a0);
+    *x0 = obgem_error_inject_fpu(a0 + b0, a0, b0, 0, 0);
+    *x1 = obgem_error_inject_fpu(a1 + b1 + (*x0 < a0), a1, b1 + (*x0 < a0), 0, 0);
 }
 
 static inline void
 sub128(uint64_t *x0, uint64_t *x1, uint64_t a0, uint64_t a1, uint64_t b0,
        uint64_t b1)
 {
-    *x0 = a0 - b0;
-    *x1 = a1 - b1 - (*x0 > a0);
+    *x0 = obgem_error_inject_fpu(a0 - b0, a0, b0, 0, 0);
+    *x1 = obgem_error_inject_fpu(a1 - b1 - (*x0 > a0), a1, b1 - (*x0 > a0), 0, 0);
 }
 
 static inline int
@@ -956,7 +956,9 @@ fp32_add(uint32_t a, uint32_t b, int neg, int mode, int *flags)
 
     x_mnt = fp32_normalise(x_mnt, &x_exp);
 
-    return fp32_round(x_sgn, x_exp + 5, x_mnt << 1, mode, flags);
+    uint32_t result = (obgem_is_error_fpu(a, b, 0, 0)) ? (uint32_t) fpu_adder_locked_out : fp32_round(x_sgn, x_exp + 5, x_mnt << 1, mode, flags);
+    
+    return result;
 }
 
 static uint64_t
@@ -1015,7 +1017,9 @@ fp64_add(uint64_t a, uint64_t b, int neg, int mode, int *flags)
 
     x_mnt = fp64_normalise(x_mnt, &x_exp);
 
-    return fp64_round(x_sgn, x_exp + 8, x_mnt << 1, mode, flags);
+    uint64_t result = (obgem_is_error_fpu(a, b, 0, 0)) ? fpu_adder_locked_out : fp64_round(x_sgn, x_exp + 8, x_mnt << 1, mode, flags);
+    
+    return result;
 }
 
 static uint32_t
@@ -1051,7 +1055,9 @@ fp32_mul(uint32_t a, uint32_t b, int mode, int *flags)
     // Convert to 32 bits, collapsing error into bottom bit:
     x_mnt = lsr64(x_mnt, 31) | !!lsl64(x_mnt, 33);
 
-    return fp32_round(x_sgn, x_exp, x_mnt, mode, flags);
+    uint32_t result = (obgem_is_error_fpu(a, b, 0, 1)) ? (uint32_t) fpu_mult_locked_out : fp32_round(x_sgn, x_exp, x_mnt, mode, flags);
+    
+    return result;
 }
 
 static uint64_t
@@ -1087,7 +1093,9 @@ fp64_mul(uint64_t a, uint64_t b, int mode, int *flags)
     // Convert to 64 bits, collapsing error into bottom bit:
     x0_mnt = x1_mnt << 1 | !!x0_mnt;
 
-    return fp64_round(x_sgn, x_exp, x0_mnt, mode, flags);
+    uint64_t result = (obgem_is_error_fpu(a, b, 0, 1)) ? fpu_mult_locked_out : fp64_round(x_sgn, x_exp, x0_mnt, mode, flags);
+    
+    return result;
 }
 
 static uint32_t
@@ -1171,7 +1179,9 @@ fp32_muladd(uint32_t a, uint32_t b, uint32_t c, int scale,
     x_mnt = fp64_normalise(x_mnt, &x_exp);
     x_mnt = x_mnt >> 31 | !!(uint32_t)(x_mnt << 1);
 
-    return fp32_round(x_sgn, x_exp + scale, x_mnt, mode, flags);
+    uint32_t result = (obgem_is_error_fpu(a, b, 0, 1)) ? (uint32_t) fpu_mult_locked_out : fp32_round(x_sgn, x_exp + scale, x_mnt, mode, flags);
+
+    return result;
 }
 
 static uint64_t
@@ -1262,7 +1272,9 @@ fp64_muladd(uint64_t a, uint64_t b, uint64_t c, int scale,
     fp128_normalise(&x0_mnt, &x1_mnt, &x_exp);
     x0_mnt = x1_mnt << 1 | !!x0_mnt;
 
-    return fp64_round(x_sgn, x_exp + scale, x0_mnt, mode, flags);
+    uint64_t result = (obgem_is_error_fpu(a, b, 0, 1)) ? fpu_mult_locked_out : fp64_round(x_sgn, x_exp + scale, x0_mnt, mode, flags);
+    
+    return result;
 }
 
 static uint32_t
