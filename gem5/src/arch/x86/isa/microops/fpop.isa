@@ -359,18 +359,34 @@ let {{
     # These need to consider size at some point. They'll always use doubles
     # for the moment.
     class addfp(FpBinaryOp):
-        code = 'FpDestReg = FpSrcReg1 + FpSrcReg2;'
+        code = '''
+             unsigned char *r1 = reinterpret_cast<unsigned char *>(&FpSrcReg1);
+             unsigned char *r2 = reinterpret_cast<unsigned char *>(&FpSrcReg2);
+             FpDestReg = obgem_error_inject_fp(FpSrcReg1 + FpSrcReg2, r1, r2, 0, 0);
+             '''
 
     class mulfp(FpBinaryOp):
-        code = 'FpDestReg = FpSrcReg1 * FpSrcReg2;'
+        code = '''
+             unsigned char *r1 = reinterpret_cast<unsigned char *>(&FpSrcReg1);
+             unsigned char *r2 = reinterpret_cast<unsigned char *>(&FpSrcReg2);
+             FpDestReg = obgem_error_inject_fp(FpSrcReg1 * FpSrcReg2, r1, r2, 0, 1);
+        '''
         op_class = 'FloatMultOp'
 
     class divfp(FpBinaryOp):
-        code = 'FpDestReg = FpSrcReg1 / FpSrcReg2;'
+        code = '''
+             unsigned char *r1 = reinterpret_cast<unsigned char *>(&FpSrcReg1);
+             unsigned char *r2 = reinterpret_cast<unsigned char *>(&FpSrcReg2);
+             FpDestReg = obgem_error_inject_fp(FpSrcReg1 / FpSrcReg2, r1, r2, 0, 2);
+             '''
         op_class = 'FloatDivOp'
 
     class subfp(FpBinaryOp):
-        code = 'FpDestReg = FpSrcReg1 - FpSrcReg2;'
+        code = '''
+             unsigned char *r1 = reinterpret_cast<unsigned char *>(&FpSrcReg1);
+             unsigned char *r2 = reinterpret_cast<unsigned char *>(&FpSrcReg2);
+             FpDestReg = obgem_error_inject_fp(FpSrcReg1 - FpSrcReg2, r1, r2, 0, 0);
+             '''
 
     class Yl2xFp(FpBinaryOp):
         code = '''

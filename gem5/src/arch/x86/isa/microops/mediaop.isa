@@ -748,11 +748,14 @@ let {{
             int items = numItems(size);
             uint64_t result = FpDestReg_uqw;
 
+            uint64_t arg1Bits = 0;
+            uint64_t arg2Bits = 0;
+
             for (int i = 0; i < items; i++) {
                 int hiIndex = (i + 1) * sizeBits - 1;
                 int loIndex = (i + 0) * sizeBits;
-                uint64_t arg1Bits = bits(FpSrcReg1_uqw, hiIndex, loIndex);
-                uint64_t arg2Bits = bits(FpSrcReg2_uqw, hiIndex, loIndex);
+                arg1Bits = bits(FpSrcReg1_uqw, hiIndex, loIndex);
+                arg2Bits = bits(FpSrcReg2_uqw, hiIndex, loIndex);
                 uint64_t resBits;
 
                 if (size == 4) {
@@ -771,7 +774,7 @@ let {{
 
                 result = insertBits(result, hiIndex, loIndex, resBits);
             }
-            FpDestReg_uqw = result;
+            FpDestReg_uqw = obgem_error_inject_media(result, arg1Bits, arg2Bits, 0, 0);
         '''
 
     class Msubf(MediaOp):
@@ -794,11 +797,14 @@ let {{
             int items = numItems(size);
             uint64_t result = FpDestReg_uqw;
 
+            uint64_t arg1Bits = 0;
+            uint64_t arg2Bits = 0;
+
             for (int i = 0; i < items; i++) {
                 int hiIndex = (i + 1) * sizeBits - 1;
                 int loIndex = (i + 0) * sizeBits;
-                uint64_t arg1Bits = bits(FpSrcReg1_uqw, hiIndex, loIndex);
-                uint64_t arg2Bits = bits(FpSrcReg2_uqw, hiIndex, loIndex);
+                arg1Bits = bits(FpSrcReg1_uqw, hiIndex, loIndex);
+                arg2Bits = bits(FpSrcReg2_uqw, hiIndex, loIndex);
                 uint64_t resBits;
 
                 if (size == 4) {
@@ -817,7 +823,7 @@ let {{
 
                 result = insertBits(result, hiIndex, loIndex, resBits);
             }
-            FpDestReg_uqw = result;
+            FpDestReg_uqw = obgem_error_inject_media(result, arg1Bits, arg2Bits, 0, 0);
         '''
 
     class Mmulf(MediaOp):
@@ -840,11 +846,14 @@ let {{
             int items = numItems(size);
             uint64_t result = FpDestReg_uqw;
 
+            uint64_t arg1Bits = 0;
+            uint64_t arg2Bits = 0;
+
             for (int i = 0; i < items; i++) {
                 int hiIndex = (i + 1) * sizeBits - 1;
                 int loIndex = (i + 0) * sizeBits;
-                uint64_t arg1Bits = bits(FpSrcReg1_uqw, hiIndex, loIndex);
-                uint64_t arg2Bits = bits(FpSrcReg2_uqw, hiIndex, loIndex);
+                arg1Bits = bits(FpSrcReg1_uqw, hiIndex, loIndex);
+                arg2Bits = bits(FpSrcReg2_uqw, hiIndex, loIndex);
                 uint64_t resBits;
 
                 if (size == 4) {
@@ -863,7 +872,7 @@ let {{
 
                 result = insertBits(result, hiIndex, loIndex, resBits);
             }
-            FpDestReg_uqw = result;
+            FpDestReg_uqw = obgem_error_inject_media(result, arg1Bits, arg2Bits, 0, 1);
         '''
 
     class Mdivf(MediaOp):
@@ -886,11 +895,14 @@ let {{
             int items = numItems(size);
             uint64_t result = FpDestReg_uqw;
 
+            uint64_t arg1Bits = 0;
+            uint64_t arg2Bits = 0;
+
             for (int i = 0; i < items; i++) {
                 int hiIndex = (i + 1) * sizeBits - 1;
                 int loIndex = (i + 0) * sizeBits;
-                uint64_t arg1Bits = bits(FpSrcReg1_uqw, hiIndex, loIndex);
-                uint64_t arg2Bits = bits(FpSrcReg2_uqw, hiIndex, loIndex);
+                arg1Bits = bits(FpSrcReg1_uqw, hiIndex, loIndex);
+                arg2Bits = bits(FpSrcReg2_uqw, hiIndex, loIndex);
                 uint64_t resBits;
 
                 if (size == 4) {
@@ -909,7 +921,7 @@ let {{
 
                 result = insertBits(result, hiIndex, loIndex, resBits);
             }
-            FpDestReg_uqw = result;
+            FpDestReg_uqw = obgem_error_inject_media(result, arg1Bits, arg2Bits, 0, 2);
         '''
 
     class Maddi(MediaOp):
@@ -920,11 +932,14 @@ let {{
             int items = numItems(size);
             uint64_t result = FpDestReg_uqw;
 
+            uint64_t arg1Bits = 0;
+            uint64_t arg2Bits = 0;
+
             for (int i = 0; i < items; i++) {
                 int hiIndex = (i + 1) * sizeBits - 1;
                 int loIndex = (i + 0) * sizeBits;
-                uint64_t arg1Bits = bits(FpSrcReg1_uqw, hiIndex, loIndex);
-                uint64_t arg2Bits = bits(FpSrcReg2_uqw, hiIndex, loIndex);
+                arg1Bits = bits(FpSrcReg1_uqw, hiIndex, loIndex);
+                arg2Bits = bits(FpSrcReg2_uqw, hiIndex, loIndex);
                 uint64_t resBits = arg1Bits + arg2Bits;
 
                 if (ext & 0x2) {
@@ -946,7 +961,7 @@ let {{
 
                 result = insertBits(result, hiIndex, loIndex, resBits);
             }
-            FpDestReg_uqw = result;
+            FpDestReg_uqw = obgem_error_inject_media(result, arg1Bits, arg2Bits, 0, 0);
         '''
 
     class Msubi(MediaOp):
@@ -957,11 +972,14 @@ let {{
             int items = numItems(size);
             uint64_t result = FpDestReg_uqw;
 
+            uint64_t arg1Bits = 0;
+            uint64_t arg2Bits = 0;
+
             for (int i = 0; i < items; i++) {
                 int hiIndex = (i + 1) * sizeBits - 1;
                 int loIndex = (i + 0) * sizeBits;
-                uint64_t arg1Bits = bits(FpSrcReg1_uqw, hiIndex, loIndex);
-                uint64_t arg2Bits = bits(FpSrcReg2_uqw, hiIndex, loIndex);
+                arg1Bits = bits(FpSrcReg1_uqw, hiIndex, loIndex);
+                arg2Bits = bits(FpSrcReg2_uqw, hiIndex, loIndex);
                 uint64_t resBits = arg1Bits - arg2Bits;
 
                 if (ext & 0x2) {
@@ -987,7 +1005,7 @@ let {{
 
                 result = insertBits(result, hiIndex, loIndex, resBits);
             }
-            FpDestReg_uqw = result;
+            FpDestReg_uqw = obgem_error_inject_media(result, arg1Bits, arg2Bits, 0, 0);
         '''
 
     class Mmuli(MediaOp):
@@ -999,6 +1017,9 @@ let {{
             int items = numItems(destSize);
             uint64_t result = FpDestReg_uqw;
 
+            uint64_t arg1Bits = 0;
+            uint64_t arg2Bits = 0;
+
             for (int i = 0; i < items; i++) {
                 int offset = 0;
                 if (ext & 16) {
@@ -1009,8 +1030,8 @@ let {{
                 }
                 int srcHiIndex = (i + 1) * srcBits - 1 + offset;
                 int srcLoIndex = (i + 0) * srcBits + offset;
-                uint64_t arg1Bits = bits(FpSrcReg1_uqw, srcHiIndex, srcLoIndex);
-                uint64_t arg2Bits = bits(FpSrcReg2_uqw, srcHiIndex, srcLoIndex);
+                arg1Bits = bits(FpSrcReg1_uqw, srcHiIndex, srcLoIndex);
+                arg2Bits = bits(FpSrcReg2_uqw, srcHiIndex, srcLoIndex);
                 uint64_t resBits;
 
                 if (signedOp()) {
@@ -1033,7 +1054,7 @@ let {{
                 int destLoIndex = (i + 0) * destBits;
                 result = insertBits(result, destHiIndex, destLoIndex, resBits);
             }
-            FpDestReg_uqw = result;
+            FpDestReg_uqw = obgem_error_inject_media(result, arg1Bits, arg2Bits, 0, 1);
         '''
 
     class Mavg(MediaOp):

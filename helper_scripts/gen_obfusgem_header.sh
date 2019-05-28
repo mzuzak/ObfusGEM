@@ -54,6 +54,19 @@ echo "static uint64_t mult_locked_flags_mask = $mult_locked_flags_mask;" >> ./sr
 echo "static uint64_t mult_locked_out = $mult_locked_out;" >> ./src/obfusgem/alu_obgem.hh
 echo "" >> ./src/obfusgem/alu_obgem.hh
 
+echo "// Divider Locking Configuration" >> ./src/obfusgem/alu_obgem.hh
+echo "static uint64_t div_lock = $div_lock;" >> ./src/obfusgem/alu_obgem.hh
+echo "static uint64_t div_err_rate = $div_err_rate;" >> ./src/obfusgem/alu_obgem.hh
+echo "static uint64_t div_err_severity = $div_err_severity;" >> ./src/obfusgem/alu_obgem.hh
+echo "static uint64_t div_locked_op1 = $div_locked_op1;" >> ./src/obfusgem/alu_obgem.hh
+echo "static uint64_t div_locked_op2 = $div_locked_op2;" >> ./src/obfusgem/alu_obgem.hh
+echo "static uint64_t div_locked_flags = $div_locked_flags;" >> ./src/obfusgem/alu_obgem.hh
+echo "static uint64_t div_locked_op1_mask = $div_locked_op1_mask;" >> ./src/obfusgem/alu_obgem.hh
+echo "static uint64_t div_locked_op2_mask = $div_locked_op2_mask;" >> ./src/obfusgem/alu_obgem.hh
+echo "static uint64_t div_locked_flags_mask = $div_locked_flags_mask;" >> ./src/obfusgem/alu_obgem.hh
+echo "static uint64_t div_locked_out = $div_locked_out;" >> ./src/obfusgem/alu_obgem.hh
+echo "" >> ./src/obfusgem/alu_obgem.hh
+
 
 #
 # Decoder ObfusGEM Configuration
@@ -274,4 +287,17 @@ echo "static uint64_t fpu_mult_locked_op1_mask = $fpu_mult_locked_op1_mask;" >> 
 echo "static uint64_t fpu_mult_locked_op2_mask = $fpu_mult_locked_op2_mask;" >> ./src/obfusgem/fpu_obgem.hh
 echo "static uint64_t fpu_mult_locked_flags_mask = $fpu_mult_locked_flags_mask;" >> ./src/obfusgem/fpu_obgem.hh
 echo "static uint64_t fpu_mult_locked_out = $fpu_mult_locked_out;" >> ./src/obfusgem/fpu_obgem.hh
+echo "" >> ./src/obfusgem/fpu_obgem.hh
+
+echo "// FPU Divider Locking Configuration" >> ./src/obfusgem/fpu_obgem.hh
+echo "static uint64_t fpu_div_lock = $fpu_div_lock;" >> ./src/obfusgem/fpu_obgem.hh
+echo "static uint64_t fpu_div_err_rate = $fpu_div_err_rate;" >> ./src/obfusgem/fpu_obgem.hh
+echo "static uint64_t fpu_div_err_severity = $fpu_div_err_severity;" >> ./src/obfusgem/fpu_obgem.hh
+echo "static uint64_t fpu_div_locked_op1 = $fpu_div_locked_op1;" >> ./src/obfusgem/fpu_obgem.hh
+echo "static uint64_t fpu_div_locked_op2 = $fpu_div_locked_op2;" >> ./src/obfusgem/fpu_obgem.hh
+echo "static uint64_t fpu_div_locked_flags = $fpu_div_locked_flags;" >> ./src/obfusgem/fpu_obgem.hh
+echo "static uint64_t fpu_div_locked_op1_mask = $fpu_div_locked_op1_mask;" >> ./src/obfusgem/fpu_obgem.hh
+echo "static uint64_t fpu_div_locked_op2_mask = $fpu_div_locked_op2_mask;" >> ./src/obfusgem/fpu_obgem.hh
+echo "static uint64_t fpu_div_locked_flags_mask = $fpu_div_locked_flags_mask;" >> ./src/obfusgem/fpu_obgem.hh
+echo "static uint64_t fpu_div_locked_out = $fpu_div_locked_out;" >> ./src/obfusgem/fpu_obgem.hh
 echo "" >> ./src/obfusgem/fpu_obgem.hh

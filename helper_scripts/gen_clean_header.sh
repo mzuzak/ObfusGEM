@@ -54,6 +54,18 @@ echo "static uint64_t mult_locked_flags_mask = 0;" >> ./src/obfusgem/alu_obgem.h
 echo "static uint64_t mult_locked_out = 0;" >> ./src/obfusgem/alu_obgem.hh
 echo "" >> ./src/obfusgem/alu_obgem.hh
 
+echo "// Divider Locking Configuration" >> ./src/obfusgem/alu_obgem.hh
+echo "static uint64_t div_lock = 0;" >> ./src/obfusgem/alu_obgem.hh
+echo "static uint64_t div_err_rate = 0;" >> ./src/obfusgem/alu_obgem.hh
+echo "static uint64_t div_err_severity = 0;" >> ./src/obfusgem/alu_obgem.hh
+echo "static uint64_t div_locked_op1 = 0;" >> ./src/obfusgem/alu_obgem.hh
+echo "static uint64_t div_locked_op2 = 0;" >> ./src/obfusgem/alu_obgem.hh
+echo "static uint64_t div_locked_flags = 0;" >> ./src/obfusgem/alu_obgem.hh
+echo "static uint64_t div_locked_op1_mask = 0;" >> ./src/obfusgem/alu_obgem.hh
+echo "static uint64_t div_locked_op2_mask = 0;" >> ./src/obfusgem/alu_obgem.hh
+echo "static uint64_t div_locked_flags_mask = 0;" >> ./src/obfusgem/alu_obgem.hh
+echo "static uint64_t div_locked_out = 0;" >> ./src/obfusgem/alu_obgem.hh
+echo "" >> ./src/obfusgem/alu_obgem.hh
 
 #
 # Decoder ObfusGEM Configuration
@@ -274,4 +286,17 @@ echo "static uint64_t fpu_mult_locked_op1_mask = 0;" >> ./src/obfusgem/fpu_obgem
 echo "static uint64_t fpu_mult_locked_op2_mask = 0;" >> ./src/obfusgem/fpu_obgem.hh
 echo "static uint64_t fpu_mult_locked_flags_mask = 0;" >> ./src/obfusgem/fpu_obgem.hh
 echo "static uint64_t fpu_mult_locked_out = 0;" >> ./src/obfusgem/fpu_obgem.hh
+echo "" >> ./src/obfusgem/fpu_obgem.hh
+
+echo "// FPU Divider Locking Configuration" >> ./src/obfusgem/fpu_obgem.hh
+echo "static uint64_t fpu_div_lock = 0;" >> ./src/obfusgem/fpu_obgem.hh
+echo "static uint64_t fpu_div_err_rate = 0;" >> ./src/obfusgem/fpu_obgem.hh
+echo "static uint64_t fpu_div_err_severity = 0;" >> ./src/obfusgem/fpu_obgem.hh
+echo "static uint64_t fpu_div_locked_op1 = 0;" >> ./src/obfusgem/fpu_obgem.hh
+echo "static uint64_t fpu_div_locked_op2 = 0;" >> ./src/obfusgem/fpu_obgem.hh
+echo "static uint64_t fpu_div_locked_flags = 0;" >> ./src/obfusgem/fpu_obgem.hh
+echo "static uint64_t fpu_div_locked_op1_mask = 0;" >> ./src/obfusgem/fpu_obgem.hh
+echo "static uint64_t fpu_div_locked_op2_mask = 0;" >> ./src/obfusgem/fpu_obgem.hh
+echo "static uint64_t fpu_div_locked_flags_mask = 0;" >> ./src/obfusgem/fpu_obgem.hh
+echo "static uint64_t fpu_div_locked_out = 0;" >> ./src/obfusgem/fpu_obgem.hh
 echo "" >> ./src/obfusgem/fpu_obgem.hh
