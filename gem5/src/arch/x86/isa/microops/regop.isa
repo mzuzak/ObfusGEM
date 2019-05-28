@@ -654,6 +654,8 @@ let {{
         op_class = 'IntDivOp'
 
         code = '''
+            //Determine if obfusgem error is injected
+            uint64_t is_err = is_obgem_error(psrc1, op2, 0, 2);
             //These are temporaries so that modifying them later won't make
             //the ISA parser think they're also sources.
             uint64_t quotient = 0;
@@ -669,8 +671,8 @@ let {{
             } else {
                 divide(dividend, divisor, quotient, remainder);
                 //Record the final results.
-                Remainder = remainder;
-                Quotient = quotient;
+                Remainder = (is_err) ? div_locked_rem_out : remainder;
+                Quotient = (is_err) ? div_locked_qou_out : quotient;
                 Divisor = divisor;
             }
             '''
@@ -680,6 +682,8 @@ let {{
         op_class = 'IntDivOp'
 
         divCode = '''
+            //Determine if obfusgem error is injected
+            uint64_t is_err = is_obgem_error(SrcReg1, op2, 0, 2);
             uint64_t dividend = Remainder;
             uint64_t divisor = Divisor;
             uint64_t quotient = Quotient;
@@ -728,8 +732,8 @@ let {{
             //Keep track of how many bits there are still to pull in.
             %s
             //Record the final results
-            Remainder = remainder;
-            Quotient = quotient;
+            Remainder = (is_err) ? div_locked_rem_out : remainder;
+            Quotient = (is_err) ? div_locked_qou_out : quotient;
         '''
         code = divCode % "DestReg = merge(DestReg, remaining, dataSize);"
         big_code = divCode % "DestReg = remaining & mask(dataSize * 8);"

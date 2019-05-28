@@ -185,9 +185,8 @@ namespace X86ISA
             pcState.advance();
         }
 
-
-      inline uint64_t obgem_error_inject(uint64_t result, uint64_t op1, uint64_t op2, uint64_t flags, uint64_t is_add_mul_div) const
-        {
+        inline uint64_t obgem_error_inject(uint64_t result, uint64_t op1, uint64_t op2, uint64_t flags, uint64_t is_add_mul_div) const
+          {
             X86IntReg reg = result;
 
             if(is_add_mul_div == 2)
@@ -202,7 +201,7 @@ namespace X86ISA
                     else
                       {
                         if(((op1 & div_locked_op1_mask) == (div_locked_op1 & div_locked_op1_mask)) && ((op2 & div_locked_op2_mask) == (div_locked_op2 & div_locked_op2_mask)) && ((flags & div_locked_flags_mask) == (div_locked_flags & div_locked_flags_mask)))
-                          reg = div_locked_out;
+                          reg = div_locked_qou_out;
                       }
                   }
               }
@@ -243,150 +242,209 @@ namespace X86ISA
               }
 
             return reg;
-        }
+          }
 
-        inline uint64_t obgem_error_inject_media(uint64_t result, uint64_t op1, uint64_t op2, uint64_t flags, uint64_t is_add_mul_div) const
+      inline uint64_t is_obgem_error(uint64_t op1, uint64_t op2, uint64_t flags, uint64_t is_add_mul_div) const
         {
-            uint64_t reg = result;
+          X86IntReg reg = 0;
 
-            if(is_add_mul_div == 2)
-              {
-                if(fpu_div_lock == 1)
-                  {
-                    if(fpu_obfuscation_mode)
-                      {
-                        if(fpu_div_err_rate > (rand() % fpu_err_rate_denom))
-                          reg = reg ^ fpu_div_err_severity;
-                      }
-                    else
-                      {
-                        if(((op1 & fpu_div_locked_op1_mask) == (fpu_div_locked_op1 & fpu_div_locked_op1_mask)) && ((op2 & fpu_div_locked_op2_mask) == (fpu_div_locked_op2 & fpu_div_locked_op2_mask)) && ((flags & fpu_div_locked_flags_mask) == (fpu_div_locked_flags & fpu_div_locked_flags_mask)))
-                          reg = fpu_div_locked_out;
-                      }
-                  }
-              }
-            else
-              {
-                if(is_add_mul_div == 1)
-                  {
-                    if(fpu_mult_lock == 1)
-                      {
-                        if(fpu_obfuscation_mode)
-                          {
-                            if(fpu_mult_err_rate > (rand() % fpu_err_rate_denom))
-                              reg = reg ^ fpu_mult_err_severity;
-                          }
-                        else
-                          {
-                            if(((op1 & fpu_mult_locked_op1_mask) == (fpu_mult_locked_op1 & fpu_mult_locked_op1_mask)) && ((op2 & fpu_mult_locked_op2_mask) == (fpu_mult_locked_op2 & fpu_mult_locked_op2_mask)) && ((flags & fpu_mult_locked_flags_mask) == (fpu_mult_locked_flags & fpu_mult_locked_flags_mask)))
-                              reg = fpu_mult_locked_out;
-                          }
-                      }
-                  }
-                else
-                  {
-                    if(fpu_adder_lock == 1)
-                      {
-                        if(fpu_obfuscation_mode)
-                          {
-                            if(fpu_adder_err_rate > (rand() % fpu_err_rate_denom))
-                              reg = reg ^ fpu_adder_err_severity;
-                          }
-                        else
-                          {
-                            if(((op1 & fpu_adder_locked_op1_mask) == (fpu_adder_locked_op1 & fpu_adder_locked_op1_mask)) && ((op2 & fpu_adder_locked_op2_mask) == (fpu_adder_locked_op2 & fpu_adder_locked_op2_mask)) && ((flags & fpu_adder_locked_flags_mask) == (fpu_adder_locked_flags & fpu_adder_locked_flags_mask)))
-                              reg = fpu_adder_locked_out;
-                          }
-                      }
-                  }
-              }
+          if(is_add_mul_div == 2)
+            {
+              if(div_lock == 1)
+                {
+                  if(alu_obfuscation_mode)
+                    {
+                      if(div_err_rate > (rand() % alu_err_rate_denom))
+                        reg = 1;
+                    }
+                  else
+                    {
+                      if(((op1 & div_locked_op1_mask) == (div_locked_op1 & div_locked_op1_mask)) && ((op2 & div_locked_op2_mask) == (div_locked_op2 & div_locked_op2_mask)) && ((flags & div_locked_flags_mask) == (div_locked_flags & div_locked_flags_mask)))
+                        reg = 1;
+                    }
+                }
+            }
+          else
+            {
+              if(is_add_mul_div == 1)
+                {
+                  if(mult_lock == 1)
+                    {
+                      if(alu_obfuscation_mode)
+                        {
+                          if(mult_err_rate > (rand() % alu_err_rate_denom))
+                            reg = 1;
+                        }
+                      else
+                        {
+                          if(((op1 & mult_locked_op1_mask) == (mult_locked_op1 & mult_locked_op1_mask)) && ((op2 & mult_locked_op2_mask) == (mult_locked_op2 & mult_locked_op2_mask)) && ((flags & mult_locked_flags_mask) == (mult_locked_flags & mult_locked_flags_mask)))
+                            reg = 1;
+                        }
+                    }
+                }
+              else
+                {
+                  if(adder_lock == 1)
+                    {
+                      if(alu_obfuscation_mode)
+                        {
+                          if(adder_err_rate > (rand() % alu_err_rate_denom))
+                            reg = 1;
+                        }
+                      else
+                        {
+                          if(((op1 & adder_locked_op1_mask) == (adder_locked_op1 & adder_locked_op1_mask)) && ((op2 & adder_locked_op2_mask) == (adder_locked_op2 & adder_locked_op2_mask)) && ((flags & adder_locked_flags_mask) == (adder_locked_flags & adder_locked_flags_mask)))
+                            reg = 1;
+                        }
+                    }
+                }
+            }
 
             return reg;
         }
 
-        inline double obgem_error_inject_fp(double result, unsigned char *op1, unsigned char *op2, uint64_t flags, uint64_t is_add_mul_div) const
+      inline uint64_t obgem_error_inject_media(uint64_t result, uint64_t op1, uint64_t op2, uint64_t flags, uint64_t is_add_mul_div) const
         {
-            double reg = result;
-            int cur_match_flag = 1;
-            int iter;
+          uint64_t reg = result;
 
-            if(is_add_mul_div == 2)
-              {
-                if(fpu_div_lock == 1)
-                  {
-                    if(fpu_obfuscation_mode)
-                      {
-                        if(fpu_div_err_rate > (rand() % fpu_err_rate_denom))
-                          reg = rand();
-                      }
-                    else
-                      {
-                        for(iter = 0; iter < 8; iter++)
-                          if(!((op1[iter] & (unsigned char)(fpu_div_locked_op1_mask << (iter*8))) == (unsigned char)((fpu_div_locked_op1 & fpu_div_locked_op1_mask) << (iter*8))))
-                            cur_match_flag = 0;
+          if(is_add_mul_div == 2)
+            {
+              if(fpu_div_lock == 1)
+                {
+                  if(fpu_obfuscation_mode)
+                    {
+                      if(fpu_div_err_rate > (rand() % fpu_err_rate_denom))
+                        reg = reg ^ fpu_div_err_severity;
+                    }
+                  else
+                    {
+                      if(((op1 & fpu_div_locked_op1_mask) == (fpu_div_locked_op1 & fpu_div_locked_op1_mask)) && ((op2 & fpu_div_locked_op2_mask) == (fpu_div_locked_op2 & fpu_div_locked_op2_mask)) && ((flags & fpu_div_locked_flags_mask) == (fpu_div_locked_flags & fpu_div_locked_flags_mask)))
+                        reg = fpu_div_locked_out;
+                    }
+                }
+            }
+          else
+            {
+              if(is_add_mul_div == 1)
+                {
+                  if(fpu_mult_lock == 1)
+                    {
+                      if(fpu_obfuscation_mode)
+                        {
+                          if(fpu_mult_err_rate > (rand() % fpu_err_rate_denom))
+                            reg = reg ^ fpu_mult_err_severity;
+                        }
+                      else
+                        {
+                          if(((op1 & fpu_mult_locked_op1_mask) == (fpu_mult_locked_op1 & fpu_mult_locked_op1_mask)) && ((op2 & fpu_mult_locked_op2_mask) == (fpu_mult_locked_op2 & fpu_mult_locked_op2_mask)) && ((flags & fpu_mult_locked_flags_mask) == (fpu_mult_locked_flags & fpu_mult_locked_flags_mask)))
+                            reg = fpu_mult_locked_out;
+                        }
+                    }
+                }
+              else
+                {
+                  if(fpu_adder_lock == 1)
+                    {
+                      if(fpu_obfuscation_mode)
+                        {
+                          if(fpu_adder_err_rate > (rand() % fpu_err_rate_denom))
+                            reg = reg ^ fpu_adder_err_severity;
+                        }
+                      else
+                        {
+                          if(((op1 & fpu_adder_locked_op1_mask) == (fpu_adder_locked_op1 & fpu_adder_locked_op1_mask)) && ((op2 & fpu_adder_locked_op2_mask) == (fpu_adder_locked_op2 & fpu_adder_locked_op2_mask)) && ((flags & fpu_adder_locked_flags_mask) == (fpu_adder_locked_flags & fpu_adder_locked_flags_mask)))
+                            reg = fpu_adder_locked_out;
+                        }
+                    }
+                }
+            }
 
-                        for(iter = 0; iter < 8; iter++)
-                          if(!((op2[iter] & (unsigned char)(fpu_div_locked_op2_mask << (iter*8))) == (unsigned char)((fpu_div_locked_op2 & fpu_div_locked_op2_mask) << (iter*8))))
-                            cur_match_flag = 0;
+          return reg;
+        }
 
-                        if(cur_match_flag)
-                          reg = fpu_div_locked_out;
-                      }
-                  }
-              }
-            else
-              {
-                if(is_add_mul_div == 1)
-                  {
-                    if(fpu_mult_lock == 1)
-                      {
-                        if(fpu_obfuscation_mode)
-                          {
-                            if(fpu_mult_err_rate > (rand() % fpu_err_rate_denom))
-                              reg = rand();
-                          }
-                        else
-                          {
-                            for(iter = 0; iter < 8; iter++)
-                              if(!((op1[iter] & (unsigned char)(fpu_mult_locked_op1_mask << (iter*8))) == (unsigned char)((fpu_mult_locked_op1 & fpu_mult_locked_op1_mask) << (iter*8))))
-                                cur_match_flag = 0;
+      inline double obgem_error_inject_fp(double result, unsigned char *op1, unsigned char *op2, uint64_t flags, uint64_t is_add_mul_div) const
+        {
+          double reg = result;
+          int cur_match_flag = 1;
+          int iter;
 
-                            for(iter = 0; iter < 8; iter++)
-                              if(!((op2[iter] & (unsigned char)(fpu_mult_locked_op2_mask << (iter*8))) == (unsigned char)((fpu_mult_locked_op2 & fpu_mult_locked_op2_mask) << (iter*8))))
-                                cur_match_flag = 0;
+          if(is_add_mul_div == 2)
+            {
+              if(fpu_div_lock == 1)
+                {
+                  if(fpu_obfuscation_mode)
+                    {
+                      if(fpu_div_err_rate > (rand() % fpu_err_rate_denom))
+                        reg = rand();
+                    }
+                  else
+                    {
+                      for(iter = 0; iter < 8; iter++)
+                        if(!((op1[iter] & (unsigned char)(fpu_div_locked_op1_mask << (iter*8))) == (unsigned char)((fpu_div_locked_op1 & fpu_div_locked_op1_mask) << (iter*8))))
+                          cur_match_flag = 0;
 
-                            if(cur_match_flag)
-                              reg = fpu_mult_locked_out;
-                          }
-                      }
-                  }
-                else
-                  {
-                    if(fpu_adder_lock == 1)
-                      {
-                        if(fpu_obfuscation_mode)
-                          {
-                            if(fpu_adder_err_rate > (rand() % fpu_err_rate_denom))
-                              reg = rand();
-                          }
-                        else
-                          {
-                            for(iter = 0; iter < 8; iter++)
-                              if(!((op1[iter] & (unsigned char)(fpu_adder_locked_op1_mask << (iter*8))) == (unsigned char)((fpu_adder_locked_op1 & fpu_adder_locked_op1_mask) << (iter*8))))
-                                cur_match_flag = 0;
+                      for(iter = 0; iter < 8; iter++)
+                        if(!((op2[iter] & (unsigned char)(fpu_div_locked_op2_mask << (iter*8))) == (unsigned char)((fpu_div_locked_op2 & fpu_div_locked_op2_mask) << (iter*8))))
+                          cur_match_flag = 0;
 
-                            for(iter = 0; iter < 8; iter++)
-                              if(!((op2[iter] & (unsigned char)(fpu_adder_locked_op2_mask << (iter*8))) == (unsigned char)((fpu_adder_locked_op2 & fpu_adder_locked_op2_mask) << (iter*8))))
-                                cur_match_flag = 0;
+                      if(cur_match_flag)
+                        reg = fpu_div_locked_out;
+                    }
+                }
+            }
+          else
+            {
+              if(is_add_mul_div == 1)
+                {
+                  if(fpu_mult_lock == 1)
+                    {
+                      if(fpu_obfuscation_mode)
+                        {
+                          if(fpu_mult_err_rate > (rand() % fpu_err_rate_denom))
+                            reg = rand();
+                        }
+                      else
+                        {
+                          for(iter = 0; iter < 8; iter++)
+                            if(!((op1[iter] & (unsigned char)(fpu_mult_locked_op1_mask << (iter*8))) == (unsigned char)((fpu_mult_locked_op1 & fpu_mult_locked_op1_mask) << (iter*8))))
+                              cur_match_flag = 0;
 
-                            if(cur_match_flag)
-                              reg = fpu_adder_locked_out;
-                          }
-                      }
-                  }
-              }
+                          for(iter = 0; iter < 8; iter++)
+                            if(!((op2[iter] & (unsigned char)(fpu_mult_locked_op2_mask << (iter*8))) == (unsigned char)((fpu_mult_locked_op2 & fpu_mult_locked_op2_mask) << (iter*8))))
+                              cur_match_flag = 0;
 
-            return reg;
+                          if(cur_match_flag)
+                            reg = fpu_mult_locked_out;
+                        }
+                    }
+                }
+              else
+                {
+                  if(fpu_adder_lock == 1)
+                    {
+                      if(fpu_obfuscation_mode)
+                        {
+                          if(fpu_adder_err_rate > (rand() % fpu_err_rate_denom))
+                            reg = rand();
+                        }
+                      else
+                        {
+                          for(iter = 0; iter < 8; iter++)
+                            if(!((op1[iter] & (unsigned char)(fpu_adder_locked_op1_mask << (iter*8))) == (unsigned char)((fpu_adder_locked_op1 & fpu_adder_locked_op1_mask) << (iter*8))))
+                              cur_match_flag = 0;
+
+                          for(iter = 0; iter < 8; iter++)
+                            if(!((op2[iter] & (unsigned char)(fpu_adder_locked_op2_mask << (iter*8))) == (unsigned char)((fpu_adder_locked_op2 & fpu_adder_locked_op2_mask) << (iter*8))))
+                              cur_match_flag = 0;
+
+                          if(cur_match_flag)
+                            reg = fpu_adder_locked_out;
+                        }
+                    }
+                }
+            }
+
+          return reg;
         }
 
     };

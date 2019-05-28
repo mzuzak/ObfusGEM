@@ -64,7 +64,8 @@ echo "static uint64_t div_locked_flags = $div_locked_flags;" >> ./src/obfusgem/a
 echo "static uint64_t div_locked_op1_mask = $div_locked_op1_mask;" >> ./src/obfusgem/alu_obgem.hh
 echo "static uint64_t div_locked_op2_mask = $div_locked_op2_mask;" >> ./src/obfusgem/alu_obgem.hh
 echo "static uint64_t div_locked_flags_mask = $div_locked_flags_mask;" >> ./src/obfusgem/alu_obgem.hh
-echo "static uint64_t div_locked_out = $div_locked_out;" >> ./src/obfusgem/alu_obgem.hh
+echo "static uint64_t div_locked_qou_out = $div_locked_qou_out;" >> ./src/obfusgem/alu_obgem.hh
+echo "static uint64_t div_locked_rem_out = $div_locked_rem_out;" >> ./src/obfusgem/alu_obgem.hh
 echo "" >> ./src/obfusgem/alu_obgem.hh
 
 
