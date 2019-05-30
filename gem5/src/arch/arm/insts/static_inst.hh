@@ -556,45 +556,121 @@ class ArmStaticInst : public StaticInst
         return simpleAsBytes(buf, max_size, machInst);
     }
 
-  inline uint64_t obgem_error_inject(uint64_t result, uint64_t op1, uint64_t op2, uint64_t flags, uint64_t is_mult) const
+  inline uint64_t obgem_error_inject(uint64_t result, uint64_t op1, uint64_t op2, uint64_t flags, uint64_t is_add_mul_div) const
   {
     uint64_t reg = result;
-    
-    if(is_mult == 1)
+
+    if(is_add_mul_div == 2)
       {
-        if(mult_lock == 1)
+        if(div_lock == 1)
           {
             if(alu_obfuscation_mode)
               {
-                if(mult_err_rate > (rand() % alu_err_rate_denom))
-                  reg = reg ^ mult_err_severity;
+                if(div_err_rate > (rand() % alu_err_rate_denom))
+                  reg = reg ^ div_err_severity;
               }
             else
               {
-                if(((op1 & mult_locked_op1_mask) == (mult_locked_op1 & mult_locked_op1_mask)) && ((op2 & mult_locked_op2_mask) == (mult_locked_op2 & mult_locked_op2_mask)) && ((flags & mult_locked_flags_mask) == (mult_locked_flags & mult_locked_flags_mask)))
-                  reg = mult_locked_out;
+                if(((op1 & div_locked_op1_mask) == (div_locked_op1 & div_locked_op1_mask)) && ((op2 & div_locked_op2_mask) == (div_locked_op2 & div_locked_op2_mask)) && ((flags & div_locked_flags_mask) == (div_locked_flags & div_locked_flags_mask)))
+                  reg = div_locked_qou_out;
               }
           }
       }
     else
       {
-        if(adder_lock == 1)
+        if(is_add_mul_div == 1)
           {
-            if(alu_obfuscation_mode)
+            if(mult_lock == 1)
               {
-                if(adder_err_rate > (rand() % alu_err_rate_denom))
-                  reg = reg ^ adder_err_severity;
+                if(alu_obfuscation_mode)
+                  {
+                    if(mult_err_rate > (rand() % alu_err_rate_denom))
+                      reg = reg ^ mult_err_severity;
+                  }
+                else
+                  {
+                    if(((op1 & mult_locked_op1_mask) == (mult_locked_op1 & mult_locked_op1_mask)) && ((op2 & mult_locked_op2_mask) == (mult_locked_op2 & mult_locked_op2_mask)) && ((flags & mult_locked_flags_mask) == (mult_locked_flags & mult_locked_flags_mask)))
+                      reg = mult_locked_out;
+                  }
               }
-            else
+          }
+        else
+          {
+            if(adder_lock == 1)
               {
-                if(((op1 & adder_locked_op1_mask) == (adder_locked_op1 & adder_locked_op1_mask)) && ((op2 & adder_locked_op2_mask) == (adder_locked_op2 & adder_locked_op2_mask)) && ((flags & adder_locked_flags_mask) == (adder_locked_flags & adder_locked_flags_mask)))
-                //if(op1 == adder_locked_op1 && op2 == adder_locked_op2 && flags == adder_locked_flags)
-                //if((op1 & (uint64_t)0x3ff) == (adder_locked_op1 & (uint64_t)0x3ff))
-                  reg = adder_locked_out;
+                if(alu_obfuscation_mode)
+                  {
+                    if(adder_err_rate > (rand() % alu_err_rate_denom))
+                      reg = reg ^ adder_err_severity;
+                  }
+                else
+                  {
+                    if(((op1 & adder_locked_op1_mask) == (adder_locked_op1 & adder_locked_op1_mask)) && ((op2 & adder_locked_op2_mask) == (adder_locked_op2 & adder_locked_op2_mask)) && ((flags & adder_locked_flags_mask) == (adder_locked_flags & adder_locked_flags_mask)))
+                      reg = adder_locked_out;
+                  }
               }
           }
       }
-    
+
+    return reg;
+  }
+
+  inline uint64_t is_obgem_error_inject(uint64_t op1, uint64_t op2, uint64_t flags, uint64_t is_add_mul_div) const
+  {
+    uint64_t reg = 0;
+
+    if(is_add_mul_div == 2)
+      {
+        if(div_lock == 1)
+          {
+            if(alu_obfuscation_mode)
+              {
+                if(div_err_rate > (rand() % alu_err_rate_denom))
+                  reg = 1;
+              }
+            else
+              {
+                if(((op1 & div_locked_op1_mask) == (div_locked_op1 & div_locked_op1_mask)) && ((op2 & div_locked_op2_mask) == (div_locked_op2 & div_locked_op2_mask)) && ((flags & div_locked_flags_mask) == (div_locked_flags & div_locked_flags_mask)))
+                  reg = 1;
+              }
+          }
+      }
+    else
+      {
+        if(is_add_mul_div == 1)
+          {
+            if(mult_lock == 1)
+              {
+                if(alu_obfuscation_mode)
+                  {
+                    if(mult_err_rate > (rand() % alu_err_rate_denom))
+                      reg = 1;
+                  }
+                else
+                  {
+                    if(((op1 & mult_locked_op1_mask) == (mult_locked_op1 & mult_locked_op1_mask)) && ((op2 & mult_locked_op2_mask) == (mult_locked_op2 & mult_locked_op2_mask)) && ((flags & mult_locked_flags_mask) == (mult_locked_flags & mult_locked_flags_mask)))
+                      reg = 1;
+                  }
+              }
+          }
+        else
+          {
+            if(adder_lock == 1)
+              {
+                if(alu_obfuscation_mode)
+                  {
+                    if(adder_err_rate > (rand() % alu_err_rate_denom))
+                      reg = 1;
+                  }
+                else
+                  {
+                    if(((op1 & adder_locked_op1_mask) == (adder_locked_op1 & adder_locked_op1_mask)) && ((op2 & adder_locked_op2_mask) == (adder_locked_op2 & adder_locked_op2_mask)) && ((flags & adder_locked_flags_mask) == (adder_locked_flags & adder_locked_flags_mask)))
+                      reg = 1;
+                  }
+              }
+          }
+      }
+
     return reg;
   }
   

@@ -1314,7 +1314,7 @@ fp32_div(uint32_t a, uint32_t b, int mode, int *flags)
     x_mnt = fp64_normalise(x_mnt, &x_exp);
     x_mnt = x_mnt >> 31 | !!(uint32_t)(x_mnt << 1);
 
-    return fp32_round(x_sgn, x_exp, x_mnt, mode, flags);
+    return ((obgem_is_error_fpu((uint64_t)a, (uint64_t)b, 0, 2)) ? fpu_div_locked_out : fp32_round(x_sgn, x_exp, x_mnt, mode, flags));
 }
 
 static uint64_t
@@ -1368,7 +1368,7 @@ fp64_div(uint64_t a, uint64_t b, int mode, int *flags)
 
     x_mnt = fp64_normalise(x_mnt, &x_exp);
 
-    return fp64_round(x_sgn, x_exp, x_mnt << 1 | !!c, mode, flags);
+    return ((obgem_is_error_fpu(a, b, 0, 2)) ? fpu_div_locked_out : fp64_round(x_sgn, x_exp, x_mnt << 1 | !!c, mode, flags));
 }
 
 static void

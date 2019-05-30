@@ -44,7 +44,7 @@ let {{
     } else if (Op1_sw == INT_MIN && Op2_sw == -1) {
         Dest_sw = INT_MIN;
     } else {
-        Dest_sw = Op1_sw / Op2_sw;
+        Dest_sw = (int64_t)obgem_error_inject(Op1_sw / Op2_sw, Op1_sw, Op2_sw, 0, 2);
     }
     '''
     sdivIop = InstObjParams("sdiv", "Sdiv", "RegRegRegOp",
@@ -59,7 +59,7 @@ let {{
     if (Op2_uw == 0) {
         Dest_uw = 0;
     } else {
-        Dest_uw = Op1_uw / Op2_uw;
+        Dest_uw = obgem_error_inject(Op1_uw / Op2_uw, Op1_uw, Op2_uw, 0, 2);
     }
     '''
     udivIop = InstObjParams("udiv", "Udiv", "RegRegRegOp",
