@@ -114,17 +114,38 @@ echo "" >> ./src/obfusgem/bp_obgem.hh
 
 echo "// ObfusGEM Injection Mode" >> ./src/obfusgem/bp_obgem.hh
 echo "static uint64_t bp_obfuscation_mode = $random_obfuscation_mode;" >> ./src/obfusgem/bp_obgem.hh
+echo "static uint64_t ras_obfuscation_mode = $random_obfuscation_mode;" >> ./src/obfusgem/bp_obgem.hh
+echo "static uint64_t btb_obfuscation_mode = $random_obfuscation_mode;" >> ./src/obfusgem/bp_obgem.hh
 echo "" >> ./src/obfusgem/bp_obgem.hh
 
 echo "// Error Rate Denominator" >> ./src/obfusgem/bp_obgem.hh
 echo "static uint64_t bp_err_rate_denom = $err_rate_denom;" >> ./src/obfusgem/bp_obgem.hh
+echo "static uint64_t ras_err_rate_denom = $err_rate_denom;" >> ./src/obfusgem/bp_obgem.hh
+echo "static uint64_t btb_err_rate_denom = $err_rate_denom;" >> ./src/obfusgem/bp_obgem.hh
 echo "" >> ./src/obfusgem/bp_obgem.hh
 
 echo "// Branch Predictor Locking Configuration" >> ./src/obfusgem/bp_obgem.hh
 echo "static uint64_t bp_lock = 0;" >> ./src/obfusgem/bp_obgem.hh
 echo "static uint64_t bp_err_rate = 0;" >> ./src/obfusgem/bp_obgem.hh
 echo "static uint64_t bp_locked_addr = 0;" >> ./src/obfusgem/bp_obgem.hh
+echo "static uint64_t bp_locked_mask = 0;" >> ./src/obfusgem/bp_obgem.hh
 echo "static uint64_t bp_locked_out = 0;" >> ./src/obfusgem/bp_obgem.hh
+echo "" >> ./src/obfusgem/bp_obgem.hh
+
+echo "// BTB Locking Configuration" >> ./src/obfusgem/bp_obgem.hh
+echo "static uint64_t btb_lock = 0;" >> ./src/obfusgem/bp_obgem.hh
+echo "static uint64_t btb_err_rate = 0;" >> ./src/obfusgem/bp_obgem.hh
+echo "static uint64_t btb_locked_addr = 0;" >> ./src/obfusgem/bp_obgem.hh
+echo "static uint64_t btb_locked_mask = 0;" >> ./src/obfusgem/bp_obgem.hh
+echo "static uint64_t btb_locked_out = 0;" >> ./src/obfusgem/bp_obgem.hh
+echo "" >> ./src/obfusgem/bp_obgem.hh
+
+echo "// RAS Locking Configuration" >> ./src/obfusgem/bp_obgem.hh
+echo "static uint64_t ras_lock = 0;" >> ./src/obfusgem/bp_obgem.hh
+echo "static uint64_t ras_err_rate = 0;" >> ./src/obfusgem/bp_obgem.hh
+echo "static uint64_t ras_locked_addr = 0;" >> ./src/obfusgem/bp_obgem.hh
+echo "static uint64_t ras_locked_mask = 0;" >> ./src/obfusgem/bp_obgem.hh
+echo "static uint64_t ras_locked_out = 0;" >> ./src/obfusgem/bp_obgem.hh
 echo "" >> ./src/obfusgem/bp_obgem.hh
 
 

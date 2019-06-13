@@ -212,8 +212,8 @@ BPredUnit::predict(const StaticInstPtr &inst, const InstSeqNum &seqNum,
     PredictorHistory predict_record(seqNum, pc.instAddr(),
                                     pred_taken, bp_history, tid);
 
-    pred_taken = obgem_error_inject(pred_taken, pc.instAddr());    
-    
+    pred_taken = obgem_error_inject_bp(pred_taken, pc.instAddr());
+
     // Now lookup in the BTB or RAS.
     if (pred_taken) {
         if (inst->isReturn()) {
@@ -238,6 +238,9 @@ BPredUnit::predict(const StaticInstPtr &inst, const InstSeqNum &seqNum,
             ++BTBLookups;
 
             if (inst->isCall()) {
+
+                pc.pc((Addr) obgem_error_inject_ras(pc.instAddr()));
+
                 RAS[tid].push(pc);
                 predict_record.pushedRAS = true;
 
@@ -265,6 +268,9 @@ BPredUnit::predict(const StaticInstPtr &inst, const InstSeqNum &seqNum,
                     DPRINTF(Branch, "[tid:%i]: BTB doesn't have a "
                             "valid entry.\n",tid);
                     pred_taken = false;
+
+                    pc.pc((Addr) obgem_error_inject_btb(pc.instAddr()));
+
                     // The Direction of the branch predictor is altered
                     // because the BTB did not have an entry
                     // The predictor needs to be updated accordingly
@@ -323,11 +329,11 @@ BPredUnit::predict(const StaticInstPtr &inst, const InstSeqNum &seqNum,
 }
 
 bool
-BPredUnit::obgem_error_inject(bool pred_taken, Addr instPC)
+BPredUnit::obgem_error_inject_bp(bool pred_taken, Addr instPC)
 {
 
       bool bpred = pred_taken;
-      
+
       if(bp_lock == 1)
       {
         // Probabilistic error injection
@@ -339,12 +345,59 @@ BPredUnit::obgem_error_inject(bool pred_taken, Addr instPC)
         // Deterministic branch predictor locking
         else
           {
-            if(bp_locked_addr == instPC)
+            if((bp_locked_addr & bp_locked_mask) == (instPC & bp_locked_mask))
                 bpred = bp_locked_out;
           }
       }
-            
       return bpred;
+}
+
+uint64_t
+BPredUnit::obgem_error_inject_ras(Addr instPC)
+{
+
+      uint64_t result = instPC;
+
+      if(ras_lock == 1)
+      {
+        // Probabilistic error injection
+        if(ras_obfuscation_mode)
+          {
+            if(ras_err_rate > (rand() % ras_err_rate_denom))
+              result = result ^ 0x1;
+          }
+        // Deterministic branch predictor locking
+        else
+          {
+            if((ras_locked_addr & ras_locked_mask) == (instPC & ras_locked_mask))
+                result = ras_locked_out;
+          }
+      }
+      return result;
+}
+
+uint64_t
+BPredUnit::obgem_error_inject_btb(Addr instPC)
+{
+
+      uint64_t result = instPC;
+
+      if(btb_lock == 1)
+      {
+        // Probabilistic error injection
+        if(btb_obfuscation_mode)
+          {
+            if(btb_err_rate > (rand() % btb_err_rate_denom))
+              result = result ^ 0x1;
+          }
+        // Deterministic branch predictor locking
+        else
+          {
+            if((btb_locked_addr & btb_locked_mask) == (instPC & btb_locked_mask))
+                result = btb_locked_out;
+          }
+      }
+      return result;
 }
 
 void

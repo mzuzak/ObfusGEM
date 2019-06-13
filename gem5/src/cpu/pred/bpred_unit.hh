@@ -99,7 +99,9 @@ class BPredUnit : public SimObject
     /**
      * ObfusGEM error injector for branch predictor
      */
-    bool obgem_error_inject(bool pred_taken, Addr instPC);
+    bool obgem_error_inject_bp(bool pred_taken, Addr instPC);
+    uint64_t obgem_error_inject_ras(Addr instPC);
+    uint64_t obgem_error_inject_btb(Addr instPC);
   
     // @todo: Rename this function.
     virtual void uncondBranch(ThreadID tid, Addr pc, void * &bp_history) = 0;
