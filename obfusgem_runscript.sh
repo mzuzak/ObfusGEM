@@ -74,6 +74,8 @@ for bm in "${benchmarks[@]}"; do
         echo "${cpt_files[0]}"
         cd -
 
+        # Export the obfusgem trace divergence window for use in tracediff
+        export obgem_trace_window
         ./util/tracediff './build/X86/gem5.gold|./build/X86/gem5.obfus' --debug-flags=Exec,-ExecTicks $gem5_config $gem5_cpt_restore --script=../benchmark_runscripts/$bm.rcS ${gem5_args[@]} > "$log" 2>&1 &
         pid=$!
 
