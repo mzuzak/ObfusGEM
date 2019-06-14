@@ -116,8 +116,8 @@ BaseTags::insertBlock(PacketPtr pkt, CacheBlk *blk)
     occupancies[master_id]++;
     blk->srcMasterId = master_id;
 
-    // ObfusGEM D-Cache Tag Error Injection
-    if((blk->srcMasterId == 11) && dcache_tag_lock)
+    // ObfusGEM Cache Tag Error Injection
+    if(cache_tag_lock)
       {
         int setShift = floorLog2(blkSize);
         int tagShift = setShift + floorLog2(numSets);
@@ -125,34 +125,14 @@ BaseTags::insertBlock(PacketPtr pkt, CacheBlk *blk)
         if(cache_tag_obfuscation_mode)
           {
             // Probabilistic error injection
-            if(dcache_tag_err_rate > (rand() % cache_tag_err_rate_denom))
-              blk->tag = ((extractTag(addr) ^ (uint64_t)dcache_tag_err_severity) << (tagShift)) >> (tagShift);
+            if(cache_tag_err_rate > (rand() % cache_tag_err_rate_denom))
+              blk->tag = extractTag(addr) ^ (uint64_t)cache_tag_err_severity;
           }
         else
           {
             // Deterministic opcode locking
-            if((uint64_t)extractTag(addr) == ((dcache_tag_locked_addr  << (tagShift)) >> (tagShift)))
-              blk->tag = (dcache_tag_locked_out  << (tagShift)) >> (tagShift);
-          }
-      }
-
-    // ObfusGEM I-Cache Tag Error Injection
-    if((blk->srcMasterId == 7) && icache_tag_lock)
-      {
-        int setShift = floorLog2(blkSize);
-        int tagShift = setShift + floorLog2(numSets);
-
-        if(cache_tag_obfuscation_mode)
-          {
-            // Probabilistic error injection
-            if(icache_tag_err_rate > (rand() % cache_tag_err_rate_denom))
-              blk->tag = ((extractTag(addr) ^ (uint64_t)icache_tag_err_severity) << (tagShift)) >> (tagShift);
-          }
-        else
-          {
-            // Deterministic opcode locking
-            if((uint64_t)extractTag(addr) == ((icache_tag_locked_addr  << (tagShift)) >> (tagShift)))
-              blk->tag = (icache_tag_locked_out  << (tagShift)) >> (tagShift);
+            if(((uint64_t)extractTag(addr) & cache_tag_locked_mask) == (cache_tag_locked_tag & cache_tag_locked_mask))
+              blk->tag = cache_tag_locked_out;
           }
       }
 
