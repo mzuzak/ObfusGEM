@@ -61,6 +61,8 @@
 #include "mem/packet.hh"
 #include "mem/port.hh"
 
+#include "cpu/o3/obgem_cache_helper.hh"
+
 struct DerivO3CPUParams;
 
 /**
@@ -809,6 +811,9 @@ LSQUnit<Impl>::read(Request *req, Request *sreqLow, Request *sreqHigh,
         state->outstanding = 2;
         state->mainPkt = data_pkt;
     }
+
+    // Handle ObfusGEM Locking
+    fst_data_pkt->setAddr(obgem_error_inject_lsq(fst_data_pkt->getAddr(), 1));
 
     // For now, load throughput is constrained by the number of
     // load FUs only, and loads do not consume a cache port (only

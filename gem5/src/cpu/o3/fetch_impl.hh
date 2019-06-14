@@ -75,6 +75,8 @@
 #include "sim/system.hh"
 #include "cpu/o3/isa_specific.hh"
 
+//#include "cpu/o3/obgem_cache_helper.hh"
+
 using namespace std;
 
 template<class Impl>
@@ -683,6 +685,9 @@ DefaultFetch<Impl>::finishTranslation(const Fault &fault, RequestPtr mem_req)
         DPRINTF(Fetch, "Fetch: Doing instruction read.\n");
 
         fetchedCacheLines++;
+
+        // Handle ObfusGEM Locking
+        data_pkt->setAddr(obgem_error_inject_lsq(data_pkt->getAddr(), 0));
 
         // Access the cache.
         if (!cpu->getInstPort().sendTimingReq(data_pkt)) {
@@ -1416,6 +1421,9 @@ DefaultFetch<Impl>::recvReqRetry()
         assert(cacheBlocked);
         assert(retryTid != InvalidThreadID);
         assert(fetchStatus[retryTid] == IcacheWaitRetry);
+
+        // Handle ObfusGEM Locking
+        retryPkt->setAddr(obgem_error_inject_lsq(retryPkt->getAddr(), 0));
 
         if (cpu->getInstPort().sendTimingReq(retryPkt)) {
             fetchStatus[retryTid] = IcacheWaitResponse;

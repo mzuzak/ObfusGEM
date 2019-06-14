@@ -331,6 +331,9 @@ Fetch1::tryToSend(FetchRequestPtr request)
 {
     bool ret = false;
 
+    // Handle ObfusGEM Locking
+    request->packet->setAddr(obgem_error_inject_lsq(request->packet->getAddr(), 0));
+
     if (icachePort.sendTimingReq(request->packet)) {
         /* Invalidate the fetch_requests packet so we don't
          *  accidentally fail to deallocate it (or use it!)
