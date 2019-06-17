@@ -52,6 +52,8 @@
 #include "cpu/minor/pipe_data.hh"
 #include "cpu/minor/trace.hh"
 
+#include "cpu/minor/obgem_cache_helper.hh"
+
 namespace Minor
 {
 

@@ -1221,6 +1221,10 @@ template <class Impl>
 bool
 LSQUnit<Impl>::sendStore(PacketPtr data_pkt)
 {
+
+    // Handle ObfusGEM Locking
+    data_pkt->setAddr(obgem_error_inject_lsq(data_pkt->getAddr(), 1));
+
     if (!dcachePort->sendTimingReq(data_pkt)) {
         // Need to handle becoming blocked on a store.
         isStoreBlocked = true;
@@ -1242,6 +1246,9 @@ LSQUnit<Impl>::recvRetry()
 
         LSQSenderState *state =
             dynamic_cast<LSQSenderState *>(retryPkt->senderState);
+
+        // Handle ObfusGEM Locking
+        retryPkt->setAddr(obgem_error_inject_lsq(retryPkt->getAddr(), 1));
 
         if (dcachePort->sendTimingReq(retryPkt)) {
             // Don't finish the store unless this is the last packet.

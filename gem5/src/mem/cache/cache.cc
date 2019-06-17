@@ -65,8 +65,6 @@
 #include "mem/cache/prefetch/base.hh"
 #include "sim/sim_exit.hh"
 
-#include "obfusgem/cache_obgem.hh"
-
 Cache::Cache(const CacheParams *p)
     : BaseCache(p, p->system->cacheLineSize()),
       tags(p->tags),
@@ -176,51 +174,9 @@ Cache::satisfyRequest(PacketPtr pkt, CacheBlk *blk,
         // Exclusive, and never Modified
         assert(blk->isWritable());
         // Write or WriteLine at the first cache with block in writable state
-        if (blk->checkWrite(pkt)) {
+        if (blk->checkWrite(pkt))
+          pkt->writeDataToBlock(blk->data, blkSize);
 
-          int blkSize_iter;
-          
-          // ObfusGEM D-Cache Error Injection
-          if((blk->srcMasterId == 11) && dcache_lock)
-            {
-              for(blkSize_iter = 0; blkSize_iter < blkSize; blkSize_iter++)
-                {
-                  if(cache_obfuscation_mode)
-                    {
-                      // Probabilistic error injection
-                      if(dcache_err_rate > (rand() % cache_err_rate_denom))
-                        blk->data[blkSize_iter] = blk->data[blkSize_iter] ^ (uint8_t)dcache_err_severity;
-                    }
-                  else
-                    {
-                      // Deterministic opcode locking
-                      if(dcache_locked_addr == (uint64_t)pkt->getAddr())
-                        blk->data[blkSize_iter] = (uint8_t)dcache_locked_out;
-                    }
-                }
-            }
-          // ObfusGEM I-Cache Error Injection
-          else if((blk->srcMasterId == 7) && icache_lock)
-            {
-              for(blkSize_iter = 0; blkSize_iter < blkSize; blkSize_iter++)
-                {
-                  if(cache_obfuscation_mode)
-                    {
-                      // Probabilistic error injection
-                      if(icache_err_rate > (rand() % cache_err_rate_denom))
-                        blk->data[blkSize_iter] = blk->data[blkSize_iter] ^ (uint8_t)icache_err_severity;
-                    }
-                  else
-                    {
-                      // Deterministic opcode locking
-                      if(icache_locked_addr == (uint64_t)pkt->getAddr())
-                        blk->data[blkSize_iter] = (uint8_t)icache_locked_out;
-                    }
-                }
-            }
-
-            pkt->writeDataToBlock(blk->data, blkSize);
-        }
         // Always mark the line as dirty (and thus transition to the
         // Modified state) even if we are a failed StoreCond so we
         // supply data to any snoops that have appended themselves to

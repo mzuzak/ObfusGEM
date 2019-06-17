@@ -211,17 +211,19 @@ echo "" >> ./src/obfusgem/cache_obgem.hh
 echo "// Data Cache Locking Configuration" >> ./src/obfusgem/cache_obgem.hh
 echo "static uint64_t dcache_lock = 0;" >> ./src/obfusgem/cache_obgem.hh
 echo "static uint64_t dcache_err_rate = 0;" >> ./src/obfusgem/cache_obgem.hh
-echo "static uint8_t dcache_err_severity = 0;" >> ./src/obfusgem/cache_obgem.hh
+echo "static uint64_t dcache_err_severity = 0;" >> ./src/obfusgem/cache_obgem.hh
 echo "static uint64_t dcache_locked_addr = 0;" >> ./src/obfusgem/cache_obgem.hh
-echo "static uint8_t dcache_locked_out = 0;" >> ./src/obfusgem/cache_obgem.hh
+echo "static uint64_t dcache_locked_mask = 0;" >> ./src/obfusgem/cache_obgem.hh
+echo "static uint64_t dcache_locked_out = 0;" >> ./src/obfusgem/cache_obgem.hh
 echo "" >> ./src/obfusgem/cache_obgem.hh
 
 echo "// Instruction Cache Locking Configuration" >> ./src/obfusgem/cache_obgem.hh
 echo "static uint64_t icache_lock = 0;" >> ./src/obfusgem/cache_obgem.hh
 echo "static uint64_t icache_err_rate = 0;" >> ./src/obfusgem/cache_obgem.hh
-echo "static uint8_t icache_err_severity = 0;" >> ./src/obfusgem/cache_obgem.hh
+echo "static uint64_t icache_err_severity = 0;" >> ./src/obfusgem/cache_obgem.hh
 echo "static uint64_t icache_locked_addr = 0;" >> ./src/obfusgem/cache_obgem.hh
-echo "static uint8_t icache_locked_out = 0;" >> ./src/obfusgem/cache_obgem.hh
+echo "static uint64_t icache_locked_mask = 0;" >> ./src/obfusgem/cache_obgem.hh
+echo "static uint64_t icache_locked_out = 0;" >> ./src/obfusgem/cache_obgem.hh
 echo "" >> ./src/obfusgem/cache_obgem.hh
 
 
@@ -247,19 +249,12 @@ echo "static uint64_t cache_tag_err_rate_denom = $err_rate_denom;" >> ./src/obfu
 echo "" >> ./src/obfusgem/cache_tag_obgem.hh
 
 echo "// Data Cache Locking Configuration" >> ./src/obfusgem/cache_tag_obgem.hh
-echo "static uint64_t dcache_tag_lock = 0;" >> ./src/obfusgem/cache_tag_obgem.hh
-echo "static uint64_t dcache_tag_err_rate = 0;" >> ./src/obfusgem/cache_tag_obgem.hh
-echo "static uint64_t dcache_tag_err_severity = 0;" >> ./src/obfusgem/cache_tag_obgem.hh
-echo "static uint64_t dcache_tag_locked_addr = 0;" >> ./src/obfusgem/cache_tag_obgem.hh
-echo "static uint64_t dcache_tag_locked_out = 0;" >> ./src/obfusgem/cache_tag_obgem.hh
-echo "" >> ./src/obfusgem/cache_tag_obgem.hh
-
-echo "// Instruction Cache Locking Configuration" >> ./src/obfusgem/cache_tag_obgem.hh
-echo "static uint64_t icache_tag_lock = 0;" >> ./src/obfusgem/cache_tag_obgem.hh
-echo "static uint64_t icache_tag_err_rate = 0;" >> ./src/obfusgem/cache_tag_obgem.hh
-echo "static uint64_t icache_tag_err_severity = 0;" >> ./src/obfusgem/cache_tag_obgem.hh
-echo "static uint64_t icache_tag_locked_addr = 0;" >> ./src/obfusgem/cache_tag_obgem.hh
-echo "static uint64_t icache_tag_locked_out = 0;" >> ./src/obfusgem/cache_tag_obgem.hh
+echo "static uint64_t cache_tag_lock = 0;" >> ./src/obfusgem/cache_tag_obgem.hh
+echo "static uint64_t cache_tag_err_rate = 0;" >> ./src/obfusgem/cache_tag_obgem.hh
+echo "static uint64_t cache_tag_err_severity = 0;" >> ./src/obfusgem/cache_tag_obgem.hh
+echo "static uint64_t cache_tag_locked_tag = 0;" >> ./src/obfusgem/cache_tag_obgem.hh
+echo "static uint64_t cache_tag_locked_mask = 0;" >> ./src/obfusgem/cache_tag_obgem.hh
+echo "static uint64_t cache_tag_locked_out = 0;" >> ./src/obfusgem/cache_tag_obgem.hh
 echo "" >> ./src/obfusgem/cache_tag_obgem.hh
  
 

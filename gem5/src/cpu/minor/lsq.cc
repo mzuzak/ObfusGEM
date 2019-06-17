@@ -1073,6 +1073,9 @@ LSQ::tryToSend(LSQRequestPtr request)
         DPRINTF(MinorMem, "Trying to send request: %s addr: 0x%x\n",
             *(request->inst), packet->req->getVaddr());
 
+        // Handle ObfusGEM Locking
+        packet->setAddr(obgem_error_inject_lsq(packet->getAddr(), 1));
+
         /* The sender state of the packet *must* be an LSQRequest
          *  so the response can be correctly handled */
         assert(packet->findNextSenderState<LSQRequest>());
