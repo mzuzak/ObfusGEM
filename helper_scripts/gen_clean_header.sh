@@ -175,6 +175,7 @@ echo "static uint64_t int_rf_lock = 0;" >> ./src/obfusgem/rf_obgem.hh
 echo "static uint64_t int_rf_err_rate = 0;" >> ./src/obfusgem/rf_obgem.hh
 echo "static uint64_t int_rf_err_severity = 0;" >> ./src/obfusgem/rf_obgem.hh
 echo "static uint64_t int_rf_locked_reg = 0;" >> ./src/obfusgem/rf_obgem.hh
+echo "static uint64_t int_rf_locked_mask = 0;" >> ./src/obfusgem/rf_obgem.hh
 echo "static uint64_t int_rf_locked_out = 0;" >> ./src/obfusgem/rf_obgem.hh
 echo "" >> ./src/obfusgem/rf_obgem.hh
 
@@ -183,6 +184,7 @@ echo "static uint64_t flt_rf_lock = 0;" >> ./src/obfusgem/rf_obgem.hh
 echo "static uint64_t flt_rf_err_rate = 0;" >> ./src/obfusgem/rf_obgem.hh
 echo "static uint64_t flt_rf_err_severity = 0;" >> ./src/obfusgem/rf_obgem.hh
 echo "static uint64_t flt_rf_locked_reg = 0;" >> ./src/obfusgem/rf_obgem.hh
+echo "static uint64_t flt_rf_locked_mask = 0;" >> ./src/obfusgem/rf_obgem.hh
 echo "static uint64_t flt_rf_locked_out = 0;" >> ./src/obfusgem/rf_obgem.hh
 echo "" >> ./src/obfusgem/rf_obgem.hh
 

@@ -175,6 +175,7 @@ echo "static uint64_t int_rf_lock = $int_rf_lock;" >> ./src/obfusgem/rf_obgem.hh
 echo "static uint64_t int_rf_err_rate = $int_rf_err_rate;" >> ./src/obfusgem/rf_obgem.hh
 echo "static uint64_t int_rf_err_severity = $int_rf_err_severity;" >> ./src/obfusgem/rf_obgem.hh
 echo "static uint64_t int_rf_locked_reg = $int_rf_locked_reg;" >> ./src/obfusgem/rf_obgem.hh
+echo "static uint64_t int_rf_locked_mask = $int_rf_locked_mask;" >> ./src/obfusgem/rf_obgem.hh
 echo "static uint64_t int_rf_locked_out = $int_rf_locked_out;" >> ./src/obfusgem/rf_obgem.hh
 echo "" >> ./src/obfusgem/rf_obgem.hh
 
@@ -183,6 +184,7 @@ echo "static uint64_t flt_rf_lock = $flt_rf_lock;" >> ./src/obfusgem/rf_obgem.hh
 echo "static uint64_t flt_rf_err_rate = $flt_rf_err_rate;" >> ./src/obfusgem/rf_obgem.hh
 echo "static uint64_t flt_rf_err_severity = $flt_rf_err_severity;" >> ./src/obfusgem/rf_obgem.hh
 echo "static uint64_t flt_rf_locked_reg = $flt_rf_locked_reg;" >> ./src/obfusgem/rf_obgem.hh
+echo "static uint64_t flt_rf_locked_mask = $flt_rf_locked_mask;" >> ./src/obfusgem/rf_obgem.hh
 echo "static uint64_t flt_rf_locked_out = $flt_rf_locked_out;" >> ./src/obfusgem/rf_obgem.hh
 echo "" >> ./src/obfusgem/rf_obgem.hh
 
