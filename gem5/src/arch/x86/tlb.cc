@@ -57,6 +57,8 @@
 #include "sim/full_system.hh"
 #include "sim/process.hh"
 
+#include "obfusgem/tlb_obgem.hh"
+
 namespace X86ISA {
 
 TLB::TLB(const Params *p)
@@ -403,6 +405,24 @@ TLB::translate(RequestPtr req, ThreadContext *tc, Translation *translation,
                                                    false);
             }
 
+            // Obfusgem Error Injection point for X86 TLB Locking
+            if(tlb_lock)
+              {
+                if(tlb_obfuscation_mode)
+                  // Probabilistic TLB error injection
+                  {
+                    // Inject error if necessary
+                    if(tlb_err_rate > (rand() % tlb_err_rate_denom))
+                      entry->paddr = entry->paddr ^ tlb_err_severity;
+                  }
+                else
+                  // Deterministic TLB locking
+                  {
+                    if((vaddr & tlb_locked_mask) == (tlb_locked_vaddr & tlb_locked_mask))
+                        entry->paddr = tlb_locked_out;
+                  }
+              }
+
             Addr paddr = entry->paddr | (vaddr & mask(entry->logBytes));
             DPRINTF(TLB, "Translated %#x -> %#x.\n", vaddr, paddr);
             req->setPaddr(paddr);
@@ -415,6 +435,24 @@ TLB::translate(RequestPtr req, ThreadContext *tc, Translation *translation,
             req->setPaddr(vaddr);
         }
     } else {
+        // Obfusgem Error Injection point for X86 TLB Locking
+        if(tlb_lock)
+          {
+            if(tlb_obfuscation_mode)
+              // Probabilistic TLB error injection
+              {
+                // Inject error if necessary
+                if(tlb_err_rate > (rand() % tlb_err_rate_denom))
+                  vaddr = vaddr ^ tlb_err_severity;
+              }
+            else
+              // Deterministic TLB locking
+              {
+                if((vaddr & tlb_locked_mask) == (tlb_locked_vaddr & tlb_locked_mask))
+                  vaddr = tlb_locked_out;
+              }
+          }
+
         // Real mode
         DPRINTF(TLB, "In real mode.\n");
         DPRINTF(TLB, "Translated %#x -> %#x.\n", vaddr, vaddr);

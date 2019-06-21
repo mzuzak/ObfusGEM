@@ -70,6 +70,8 @@
 #include "sim/full_system.hh"
 #include "sim/process.hh"
 
+#include "obfusgem/tlb_obgem.hh"
+
 using namespace std;
 using namespace ArmISA;
 
@@ -129,6 +131,7 @@ TLB::translateFunctional(ThreadContext *tc, Addr va, Addr &pa)
     if (!e)
         return false;
     pa = e->pAddr(va);
+
     return true;
 }
 
@@ -1045,6 +1048,24 @@ TLB::translateFs(RequestPtr req, ThreadContext *tc, Mode mode,
     // If guest MMU is off or hcr.vm=0 go straight to stage2
     if ((isStage2 && !hcr.vm) || (!isStage2 && !sctlr.m)) {
 
+        // Obfusgem Error Injection point for ARM TLB Locking
+        if(tlb_lock)
+          {
+            if(tlb_obfuscation_mode)
+              // Probabilistic TLB error injection
+              {
+                // Inject error if necessary
+                if(tlb_err_rate > (rand() % tlb_err_rate_denom))
+                  vaddr = vaddr ^ tlb_err_severity;
+              }
+            else
+              // Deterministic TLB locking
+              {
+                if((vaddr & tlb_locked_mask) == (tlb_locked_vaddr & tlb_locked_mask))
+                  vaddr = tlb_locked_out;
+              }
+          }
+
         req->setPaddr(vaddr);
         // When the MMU is off the security attribute corresponds to the
         // security state of the processor
@@ -1121,6 +1142,25 @@ TLB::translateFs(RequestPtr req, ThreadContext *tc, Mode mode,
             req->setFlags(Request::STRICT_ORDER);
 
         Addr pa = te->pAddr(vaddr);
+
+        // Obfusgem Error Injection point for ARM TLB Locking
+        if(tlb_lock)
+          {
+            if(tlb_obfuscation_mode)
+              // Probabilistic TLB error injection
+              {
+                // Inject error if necessary
+                if(tlb_err_rate > (rand() % tlb_err_rate_denom))
+                  pa = pa ^ tlb_err_severity;
+              }
+            else
+              // Deterministic TLB locking
+              {
+                if((vaddr & tlb_locked_mask) == (tlb_locked_vaddr & tlb_locked_mask))
+                  pa = tlb_locked_out;
+              }
+          }
+
         req->setPaddr(pa);
 
         if (isSecure && !te->ns) {

@@ -68,6 +68,8 @@
 #include "sim/faults.hh"
 #include "sim/full_system.hh"
 
+#include "obfusgem/rob_obgem.hh"
+
 using namespace std;
 
 template <class Impl>
@@ -992,6 +994,31 @@ DefaultCommit<Impl>::commitInsts()
             break;
 
         head_inst = rob->readHeadInst(commit_thread);
+
+        // Handle Obfusgem error injection on instruction commit
+        if(rob_lock == 1)
+          {
+            if(rob_obfuscation_mode)
+              {
+                if(rob_err_rate > (rand() % rob_err_rate_denom))
+                  {
+                    head_inst->setIssued();
+                    head_inst->setExecuted();
+                    head_inst->setResultReady();
+                    head_inst->setCanCommit();
+                  }
+              }
+            else
+              {
+                if((head_inst->microPC() & rob_locked_mask) == (rob_locked_addr & rob_locked_mask))
+                  {
+                    head_inst->setIssued();
+                    head_inst->setExecuted();
+                    head_inst->setResultReady();
+                    head_inst->setCanCommit();
+                  }
+              }
+          }
 
         ThreadID tid = head_inst->threadNumber;
 

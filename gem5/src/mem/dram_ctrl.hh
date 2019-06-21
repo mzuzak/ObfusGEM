@@ -69,6 +69,8 @@
 #include "sim/eventq.hh"
 #include "mem/drampower.hh"
 
+#include "mem/obgem_mem_ctl_helper.hh"
+
 /**
  * The DRAM controller is a single-channel memory controller capturing
  * the most important timing constraints associated with a
