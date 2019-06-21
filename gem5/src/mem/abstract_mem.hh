@@ -53,7 +53,6 @@
 #include "params/AbstractMemory.hh"
 #include "sim/stats.hh"
 
-
 class System;
 
 /**

@@ -54,6 +54,8 @@
 #include "mem/packet_access.hh"
 #include "sim/system.hh"
 
+#include "mem/obgem_mem_ctl_helper.hh"
+
 using namespace std;
 
 AbstractMemory::AbstractMemory(const Params *p) :
@@ -341,7 +343,9 @@ AbstractMemory::access(PacketPtr pkt)
     assert(AddrRange(pkt->getAddr(),
                      pkt->getAddr() + (pkt->getSize() - 1)).isSubset(range));
 
-    uint8_t *hostAddr = pmemAddr + pkt->getAddr() - range.start();
+
+    // Resolve obfusgem memory controller error injection
+    uint8_t *hostAddr = pmemAddr + obgem_error_inject_mem_ctl(pkt->getAddr()) - range.start();
 
     if (pkt->cmd == MemCmd::SwapReq) {
         if (pkt->isAtomicOp()) {

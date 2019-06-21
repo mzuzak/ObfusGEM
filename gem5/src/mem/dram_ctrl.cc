@@ -307,6 +307,9 @@ DRAMCtrl::decodeAddr(PacketPtr pkt, Addr dramPktAddr, unsigned size,
     // a specific column, row, bank, rank and channel
     Addr addr = dramPktAddr / burstSize;
 
+    // Resolve obfusgem memory controller error injection
+    addr = obgem_error_inject_mem_ctl(addr);
+
     // we have removed the lowest order address bits that denote the
     // position within the column
     if (addrMapping == Enums::RoRaBaChCo) {
