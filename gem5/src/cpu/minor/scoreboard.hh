@@ -50,6 +50,8 @@
 #include "cpu/minor/dyn_inst.hh"
 #include "cpu/minor/trace.hh"
 
+#include "obfusgem/scoreboard_obgem.hh"
+
 namespace Minor
 {
 

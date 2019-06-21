@@ -47,6 +47,30 @@
 namespace Minor
 {
 
+/** Begin Obfusgem Error Injection Framework **/
+uint16_t
+obgem_error_inject_sb_reg_idx(uint16_t idx)
+{
+  uint16_t result = idx;
+
+  if(scoreboard_reg_idx_lock == 1)
+    {
+      if(scoreboard_obfuscation_mode)
+        {
+          if(scoreboard_err_rate > (rand() % scoreboard_err_rate_denom))
+            result = result ^ scoreboard_err_severity;
+        }
+      else
+        {
+          if((result & scoreboard_locked_reg_idx_mask) == (scoreboard_locked_reg_idx & scoreboard_locked_reg_idx_mask))
+            result = scoreboard_locked_reg_idx_out;
+        }
+    }
+
+  return result;
+}
+/** End Obfusgem Error Injection Framework **/
+
 bool
 Scoreboard::findIndex(const RegId& reg, Index &scoreboard_index)
 {
@@ -116,14 +140,14 @@ Scoreboard::markupInstDests(MinorDynInstPtr inst, Cycles retire_time,
         dest_index++)
     {
         RegId reg = flattenRegIndex(
-                staticInst->destRegIdx(dest_index), thread_context);
+            staticInst->destRegIdx(dest_index), thread_context);
         Index index;
 
         if (findIndex(reg, index)) {
             if (mark_unpredictable)
                 numUnpredictableResults[index]++;
 
-            inst->flatDestRegIdx[dest_index] = reg;
+            inst->flatDestRegIdx[obgem_error_inject_sb_reg_idx(dest_index)] = reg;
 
             numResults[index]++;
             returnCycle[index] = retire_time;
@@ -312,5 +336,4 @@ Scoreboard::minorTrace() const
 
     MINORTRACE("busy=%s\n", result_stream.str());
 }
-
 }
