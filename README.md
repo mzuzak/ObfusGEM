@@ -39,10 +39,10 @@ If interested, the given build can be tested using standard GEM5 simulation comm
 http://www.gem5.org/Introduction
 ```
 
-ObfusGEM requires disk images in order to run error injection simulations. We have provided several sample images which can be pulled with the following command. We note that these images are very large (~5GB).
+ObfusGEM requires disk images in order to run error injection simulations. We have provided 2 sample images, one X86 and one ARM, which can be pulled from the following location. Both of these images contain the PARSEC and SPLASH2 benchmark suites pre-installed and are compatible with the runscripts provided in the "obfusgem_runscripts" directory. We note that these images are very large (~5GB).
 
 ```
-<NEED REASONABLE FILE STORAGE>
+https://drive.google.com/drive/folders/1NKmThiV7jXGiKg3BQtdqyNEVHOO7lbw4?usp=sharing
 ```
 
 Additionally, similar images can be created for any benchmarks of your choice using the following tutorials. To mimic our provided images, PARSEC and SPLASH-2 must be installed on an ARM and X86 disk image.
