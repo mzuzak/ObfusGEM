@@ -32,7 +32,7 @@ Given that dependencies have been successfully installed, the ObfusGEM simulator
 
 ```
 cd <PATH_TO_OBFUSGEM_REPO>/gem5
-bash ./../helper_scripts/gen_clean_headers.sh
+bash ./../helper_scripts/gen_clean_header.sh
 
 scons build/X86/gem5.opt # Builds Obfusgem for the X86 architecture
 <OR ALTERNATIVELY>
