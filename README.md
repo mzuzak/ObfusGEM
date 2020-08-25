@@ -2,6 +2,12 @@
 
 This is the ObfusGEM simulator. It implements an error injection framework inspired by the architectural error resilience community to "close the loop" between module-level logic locking or hardware security techniques and their architecture-level impact. We provide a library of existing hardware security techniques and configurations along with a simulation framework in hopes of providing a tool enabling the design and evaluation of hardware security configurations for specific architectures or devices.
 
+The initial ObfusGEM manuscript from MEMSYS'20 can be found in the home directory of this repo as "ObfusGEM-MEMSYS20.pdf". If you use ObfusGEM in your research, we would appreciate a citation to the original paper in any publications you produce.
+
+```
+Zuzak, Michael, and Ankur Srivastava. "ObfusGEM: Enhancing Processor Design Obfuscation Through Security-Aware On-Chip Memory and Data Path Design." 2020 International Symposium on Memory Systems (MEMSYS). ACM, 2020.
+```
+
 ## Getting Started
 
 These instructions are intended to get a copy of ObfusGEM up and running on your machine. We provide a basic example of an ObfusGEM simulation run to demonstrate the capabilities of the tool as well.
