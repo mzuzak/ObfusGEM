@@ -17,7 +17,7 @@ git clone git@github.com:mzuzak/ObfusGEM.git
 ObfusGEM uses a modified version of the GEM5 simulator. This requires several dependencies. A list is contained at:
 
 ```
-http://www.gem5.org/Dependencies
+http://www.m5sim.org/Dependencies
 ```
 
 ### Installing
